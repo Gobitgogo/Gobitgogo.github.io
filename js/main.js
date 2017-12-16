@@ -1,7 +1,7 @@
 //let width = window.innerWidth-20;
 //let height = window.innerHeight-20;
 //if(width>height){width=height;}
-const scene = new GBT_Scene({width : 620,
+const scene = new GBT_Scene({width : 600,
                            height :480,
 					       style : "grey"
 						   });
