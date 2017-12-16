@@ -23,7 +23,7 @@ let enemyShipsTimerMove  = new scene.GBT_TimerOut();
 const game = function(){
 
 	this.create = function(){
-		alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE");
+		alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE \n для старта нажмите левой кнопкой мыши по екрану игры");
 		urls[0] = "res/enemy.png";
 		urls[1] = "res/enemyShip_2.png";
 			for(let i = 0; i < 35; i++){
