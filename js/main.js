@@ -1,8 +1,8 @@
 let width = window.innerWidth-20;
 let height = window.innerHeight-20;
 if(width>height){width=height;}
-const scene = new GBT_Scene({width : width,
-                           height : height,
+const scene = new GBT_Scene({width : 400,
+                           height : 500,
 					       style : "grey"
 						   });
 const ENEMY_START_POSITION = 300;
