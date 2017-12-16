@@ -1,8 +1,8 @@
 let width = window.innerWidth-20;
 let height = window.innerHeight-20;
 if(width>height){width=height;}
-const scene = new GBT_Scene({width : 500,
-                           height : 500,
+const scene = new GBT_Scene({width : 640,
+                           height : 520,
 					       style : "grey"
 						   });
 const ENEMY_START_POSITION = 300;
@@ -23,6 +23,7 @@ let enemyShipsTimerMove  = new scene.GBT_TimerOut();
 const game = function(){
 
 	this.create = function(){
+		alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE");
 		urls[0] = "res/enemy.png";
 		urls[1] = "res/enemyShip_2.png";
 			for(let i = 0; i < 35; i++){
@@ -189,22 +190,22 @@ const game = function(){
 			playerBullInd++;
             },playerShip.shootSpeed);
 		}
-		if(scene.GBT_KeyDown("LEFT")){
+		if(scene.GBT_KeyDown("A")){
 			playerShip.dx = -Math.round(scene.HEIGHT/120);
 			playerShip.dy = 0;
 		}
-		else if(scene.GBT_KeyDown("RIGHT")){
+		else if(scene.GBT_KeyDown("D")){
 		    playerShip.dx = Math.round(scene.HEIGHT/120);
 		    playerShip.dy = 0;
 		}
 		else{
 			playerShip.dx = 0;
 		}
-	    if(scene.GBT_KeyDown("UP")){
+	    if(scene.GBT_KeyDown("W")){
 			playerShip.dy = -Math.round(scene.HEIGHT/120);
 			playerShip.dx = 0;
 		}
-		else if(scene.GBT_KeyDown("DOWN")){
+		else if(scene.GBT_KeyDown("S")){
 		    playerShip.dy = Math.round(scene.HEIGHT/120);
 			playerShip.dx = 0;
 		}
