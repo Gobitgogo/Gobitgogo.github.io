@@ -26,7 +26,7 @@ const game = function(){
 		alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE \n для старта нажмите левой кнопкой мыши по екрану игры");
 		urls[0] = "res/enemy.png";
 		urls[1] = "res/enemyShip_2.png";
-			for(let i = 0; i < 35; i++){
+			for(let i = 0; i < 5; i++){
         let rand = Math.floor(Math.random() * 2);			
 		enemyShip = new scene.GBT_Image({url : urls[rand],
                             width : scene.WIDTH/10, height : scene.HEIGHT/10,
