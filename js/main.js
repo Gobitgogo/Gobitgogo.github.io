@@ -1,11 +1,13 @@
-//let width = window.innerWidth-20;
-//let height = window.innerHeight-20;
-//if(width>height){width=height;}
-const scene = new GBT_Scene({width : 600,
-                           height :480,
+//let width = 600;
+//let height = 480;
+let width = window.innerWidth - 20;
+let height = window.innerHeight - 20;
+if(width>height){width=height;}
+const scene = new GBT_Scene({width : width,
+                           height : height,
 					       style : "grey"
 						   });
-const ENEMY_START_POSITION = 300;
+const ENEMY_START_POSITION = 600;
 let bg = [];
 let playerShip;
 let enemyShips = [];
@@ -13,6 +15,8 @@ let newEnemyShips = [];
 let playerBullets = [];
 let enemyBullets = [];
 let urls = [];
+    urls[0] = "res/enemy.png";
+	urls[1] = "res/enemyShip_2.png";
 let enemyExplosions = [];
 let playerBullInd = 0;
 let enemyBullInd = 0;
@@ -21,102 +25,11 @@ let enemyShoot = [];
 let enemyShipsTimerMove  = new scene.GBT_TimerOut();	
 
 const game = function(){
-
+    //alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE \n для старта нажмите левой кнопкой мыши по екрану игры");
 	this.create = function(){
-		alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE \n для старта нажмите левой кнопкой мыши по екрану игры");
-		urls[0] = "res/enemy.png";
-		urls[1] = "res/enemyShip_2.png";
-			for(let i = 0; i < 5; i++){
-        let rand = Math.floor(Math.random() * 2);			
-		enemyShip = new scene.GBT_Image({url : urls[rand],
-                            width : scene.WIDTH/10, height : scene.HEIGHT/10,
-							dx : 0, 
-							
-						    });
-							
-							if(rand == 0){
-							enemyShip.dy = Math.round(scene.HEIGHT/120);
-							enemyShip.live = 0;
-							enemyShip.ind = 0;
-							enemyShip.shootSpeed = 800;
-							}else if(rand == 1){
-							enemyShip.dy = Math.round(scene.HEIGHT/180);
-							enemyShip.live = 1;
-							enemyShip.ind = 1;
-							enemyShip.shootSpeed = 300;
-							}
-							if(i == 0){
-								enemyShip.y = -ENEMY_START_POSITION-scene.HEIGHT;
-								
-							}else{
-								enemyShip.y = i*-ENEMY_START_POSITION;
-							}
-							enemyShip.x =  Math.floor(Math.random() * (scene.WIDTH-enemyShip.width - 
-							                                              enemyShip.width/2) + 
-						                                                  enemyShip.width/2);
-																	  
-		enemyShips.push(enemyShip);														  															  
-		enemyExplosions[i] = new scene.GBT_Animation({
-	                                                      url : "res/bum.png",
-	                                                      x : 0, y : 0,
-	                                                      width: enemyShips[i].width*1.5, height : enemyShips[i].height*1.5,
-	                                                      endFrameX : 4,
-	                                                      endFrameY : 4,
-                                                          animationOnXY : true,
-	                                                      fps : 1000/60
-                                                       });
-		enemyExplosions[i].explos = false; 
-		//enemyExplosions.push(enemyExplosion);
-		
-		enemyShips[i].die = false;
-		enemyShoot[i] = new scene.GBT_TimerOut();
-		}
-		for(let i = 0; i < enemyShips.length; i++){
-            enemyBullets[i] = [];	
-                for(let j = 0; j < 10; j++){		
-		                enemyBullets[i][j] = new scene.GBT_Image({url : "res/bullenemy.png",
-                                                                 dx : 0, dy : 0,
-																 width : enemyShips[i].width/5,
-																 height : enemyShips[i].height/5
-							                               });
-		        }	
-		}
-		for(let i = 0; i < 2; i++){
-	        bg[i] = new scene.GBT_Image({url : //"https://i.pinimg.com/736x/50/ac/e5/50ace556e8f1e0c422f59ec1863593dc.jpg",
-			//"https://www.nasa.gov/sites/default/files/thumbnails/image/hubble-udf.jpg",
-			"http://ask-like.net/uploads/posts/2013-03/1364660574_ga_camoq2pg.jpg",
-                                   x : 0, y : i*-scene.HEIGHT,
-                                   dy : Math.round(scene.HEIGHT/210),
-						           width : scene.WIDTH, height : scene.HEIGHT+1,
-		        });
-
-		}
-		playerShip = new scene.GBT_Image({url : "res/ship.png",
-                            width : scene.WIDTH/10, height : scene.HEIGHT/10,
-							dx : 0, dy : 0
-						    });
-							playerShip.x = scene.WIDTH/2 - playerShip.width/2;
-							playerShip.y = scene.HEIGHT - 100;
-							playerShip.shootSpeed = 300;
-							
-		playerExplosion = new scene.GBT_Animation({
-	                                                      url : "res/bum.png",
-	                                                      x : 0, y : 0,
-	                                                      width: playerShip.width*1.5, height : playerShip.height*1.5,
-	                                                      endFrameX : 4,
-	                                                      endFrameY : 4,
-                                                          animationOnXY : true,
-	                                                      fps : 1000/60
-                                                         });
-														
-		playerExplosion.explos = false;	
-		for(let i = 0; i < 10; i++){
-		playerBullets[i] = new scene.GBT_Image({url : "res/clash2.png",
-                                width : playerShip.width/5, height : playerShip.height/5,
-							    dx : 0, dy : 0
-							    });					
-		}
-
+		createEnemyShips();
+        createBg();
+		createPlayerShip();
     }			
 		
 	this.update = function(){
@@ -134,7 +47,7 @@ const game = function(){
 		
     this.render = function(){
 	    for(let i = 0; i <bg.length;i++){
-		        bg[i].draw();
+		    bg[i].draw();
 		}
 		playerBullets.forEach(bull=>{
 			if(bull.dy!=0){
@@ -145,15 +58,13 @@ const game = function(){
   	        for(let j = 0; j < enemyBullets[i].length; j++){
 				if(enemyBullets[i][j].y>0 && enemyBullets[i][j].dy !=0){
 					if(enemyShips[i] != null){
-			        enemyBullets[i][j].draw();
+			            enemyBullets[i][j].draw();
 					}
 				}
 		    }
 		}
-		
 		if(playerExplosion.explos == true){
-
-			playerExplosion.draw();
+            playerExplosion.draw();
 			//playerShip.x = null;
 			//playerShip.y = null;
 			if(playerExplosion.getCurrentFrameX()+1 == playerExplosion.getEndFrameX()&&
@@ -167,20 +78,18 @@ const game = function(){
 				playerShip.draw();
 			}
 
-	        for(let i = 0; i < enemyExplosions.length; i++){	
-		    
-			if(enemyExplosions[i].explos == true){
-			enemyExplosions[i].draw();
-			if(enemyExplosions[i].getCurrentFrameX()+1 == enemyExplosions[i].getEndFrameX() &&
-    			enemyExplosions[i].getCurrentFrameY()+1 == enemyExplosions[i].getEndFrameY()){
-			    enemyExplosions[i].explos = false;
-				
+	    for(let i = 0; i < enemyExplosions.length; i++){	
+		    if(enemyExplosions[i].explos == true){
+			    enemyExplosions[i].draw();
+			    if(enemyExplosions[i].getCurrentFrameX()+1 == enemyExplosions[i].getEndFrameX() &&
+    		        enemyExplosions[i].getCurrentFrameY()+1 == enemyExplosions[i].getEndFrameY()){
+			        enemyExplosions[i].explos = false;
 				}
 			}
 		}
-		 for(let i = 0; i < enemyShips.length; i++){
-         enemyShips[i].draw();			 
-		 }
+		for(let i = 0; i < enemyShips.length; i++){
+            enemyShips[i].draw();			 
+		}
 	}
 	
 	function handleInput(){
@@ -218,7 +127,9 @@ const game = function(){
     function bgMove(){
 		for(let i = 0; i <bg.length;i++){
 			bg[i].y+=bg[i].dy;
-			if(bg[i].y>=scene.HEIGHT) {bg[i].y = -scene.HEIGHT+1};
+			if(bg[i].y>=scene.HEIGHT) {
+				bg[i].y = -scene.HEIGHT+1
+			};
 		}
 	}
   
@@ -250,7 +161,6 @@ const game = function(){
 				bull.x = playerShip.x + playerShip.width/2 - bull.width/2, bull.y = playerShip.y;
 			}
 		});
-		
 		if(playerBullInd>playerBullets.length-1){
 			playerBullInd = 0;
 		}
@@ -258,26 +168,24 @@ const game = function(){
   
     function enemyShipsMove(){
 		for(let i = 0; i < enemyShips.length; i++){	
-		enemyShips[i].x += enemyShips[i].dx;
-		enemyShips[i].y += enemyShips[i].dy;
-		if(enemyShips[i].x>=scene.WIDTH-enemyShips[i].width){
-			let rand = Math.floor(Math.random() * -3)+1;
-		    enemyShips[i].dx = rand
-			
-		}
-		if(enemyShips[i].x<=0){
-			let rand = Math.floor(Math.random() * 3);
-			
-			enemyShips[i].dx = rand;
-		}
+		    enemyShips[i].x += enemyShips[i].dx;
+		    enemyShips[i].y += enemyShips[i].dy;
+		    if(enemyShips[i].x>=scene.WIDTH-enemyShips[i].width){
+		    	let rand = Math.floor(Math.random() * -3)+1;
+		        enemyShips[i].dx = rand
+		    }
+		    if(enemyShips[i].x<=0){
+		    	let rand = Math.floor(Math.random() * 3);
+			    enemyShips[i].dx = rand;
+		    }
 		    if(enemyShips[i].y>scene.HEIGHT){
-			enemyShips[i].x =  Math.floor(Math.random() * (scene.WIDTH-enemyShips[i].width - 
-			enemyShips[i].width/2) + enemyShips[i].width/2);
-			enemyShips[i].y =  (enemyShips.length-1)-scene.HEIGHT+ENEMY_START_POSITION;
-			if(enemyShips[i].ind == 1){
-				enemyShips[i].live = 1;
-			}
-			//enemyShips[i].die = true;
+			   //enemyShips[i].x =  Math.floor(Math.random() * (scene.WIDTH-enemyShips[i].width - 
+			   //enemyShips[i].width/2) + enemyShips[i].width/2);
+			   //enemyShips[i].y =  (enemyShips.length-1)-scene.HEIGHT+ENEMY_START_POSITION;
+			   /*if(enemyShips[i].ind == 1){
+				    enemyShips[i].live = 1;
+			    }*/
+			    enemyShips[i].die = true;
 		    }
 		}
 		enemyShipsTimerMove.start(function(){
@@ -285,9 +193,7 @@ const game = function(){
 			    let rand = Math.floor(Math.random() * (Math.round(scene.HEIGHT/320)-(-Math.round(scene.HEIGHT/320)))+(-Math.round(scene.HEIGHT/320)));
 			    enemyShips[i].dx = rand;
 			}
-		        },2000);
-		      
-		
+		},2000);
 	}
   
     function enemyBulletsMove(){
@@ -306,17 +212,14 @@ const game = function(){
 			}
         }
         for(let i = 0; i < enemyShips.length; i++){	
-        enemyShoot[i].start(function(){
-          
-			    if(enemyShips[i].y>-enemyShips[i].height){
+            enemyShoot[i].start(function(){
+                if(enemyShips[i].y>-enemyShips[i].height){
                     enemyBullInd++;
-					
-                    if(enemyBullInd<enemyBullets[i].length){
-						enemyBullets[i][enemyBullInd].dy=Math.round(scene.HEIGHT/90);
+			    	if(enemyBullInd<enemyBullets[i].length){
+			    		enemyBullets[i][enemyBullInd].dy=Math.round(scene.HEIGHT/90);
                     }
                 }		
-            		
-        },enemyShips[i].shootSpeed);
+            },enemyShips[i].shootSpeed);
 		}
         if(enemyBullInd>8){
 			enemyBullInd = 0;
@@ -324,89 +227,78 @@ const game = function(){
 	}
    
     function collision(){
-         
-            playerBullets.forEach(bull=>{
-				for(let i = 0; i < enemyShips.length; i++){	
+        playerBullets.forEach(bull=>{
+			for(let i = 0; i < enemyShips.length; i++){	
 				if(enemyShips[i].y>0 && bull.dy!=0){
                     if(scene.collision(bull,enemyShips[i])){
 						if(enemyShips[i].live == 0){
-						enemyExplosions[i].explos = true;
-						enemyExplosions[i].x = enemyShips[i].x;
-						enemyExplosions[i].y = enemyShips[i].y;
-						enemyShips[i].y =  (enemyShips.length-1)*-ENEMY_START_POSITION+ENEMY_START_POSITION;
-						if(enemyShips[i].ind == 1){
-				        enemyShips[i].live = 1;
-			            }
-						//enemyShips[i].die = true;
+						    enemyExplosions[i].explos = true;
+						    enemyExplosions[i].x = enemyShips[i].x;
+						    enemyExplosions[i].y = enemyShips[i].y;
+						    //enemyShips[i].y =  (enemyShips.length-1)*-ENEMY_START_POSITION+ENEMY_START_POSITION;
+						    //if(enemyShips[i].ind == 1){
+				            // enemyShips[i].live = 1;
+			                //}
+						    enemyShips[i].die = true;
 						}else{
-						enemyShips[i].live--;
+						    enemyShips[i].live--;
 						}
                         bull.dy = 0;
                         bull.x = playerShip.x + playerShip.width/2 - bull.width/2, bull.y = playerShip.y;
-						
-						
-						
-				    }
+					}
                 }
             }
         });
         for(let i = 0; i < enemyShips.length; i++){	
 		    for(let j = 0; j < enemyBullets[i].length; j++){
-				if(enemyBullets[i][j].dy!=0)
-				{
+				if(enemyBullets[i][j].dy!=0){
                     if(scene.collision(enemyBullets[i][j],playerShip)){
-					playerExplosion.explos = true;
-					playerExplosion.x = playerShip.x;
-				    playerExplosion.y = playerShip.y;
-                    enemyBullets[i][j].dy = 0;
-                    enemyBullets[i][j].x = enemyShips[i].x + enemyShips[i].width/2 - enemyBullets[i][j].width/2, 
-					enemyBullets[i][j].y = enemyShips[i].y;
-                 
-				    }	
+					    playerExplosion.explos = true;
+					    playerExplosion.x = playerShip.x;
+				        playerExplosion.y = playerShip.y;
+                        enemyBullets[i][j].dy = 0;
+                        enemyBullets[i][j].x = enemyShips[i].x + enemyShips[i].width/2 - enemyBullets[i][j].width/2, 
+					    enemyBullets[i][j].y = enemyShips[i].y;
+                    }	
                 }
-		playerBullets.forEach(bull=>{
-			if(enemyBullets[i][j].dy!=0 && bull.dy!=0){
-			    if(scene.collision(enemyBullets[i][j],bull)){
-			     	bull.dy = 0;
-                    bull.x = playerShip.x + playerShip.width/2 - bull.width/2, bull.y = playerShip.y;
-			     	enemyBullets[i][j].dy = 0;
-				    enemyBullets[i][j].x = enemyShips[i].x + enemyShips[i].width/2 - enemyBullets[i][j].width/2,
-			    	enemyBullets[i][j].y = enemyShips[i].y;
-			    }
-			}
-		});
+		        playerBullets.forEach(bull=>{
+			        if(enemyBullets[i][j].dy!=0 && bull.dy!=0){
+			            if(scene.collision(enemyBullets[i][j],bull)){
+			            	bull.dy = 0;
+                            bull.x = playerShip.x + playerShip.width/2 - bull.width/2, bull.y = playerShip.y;
+			            	enemyBullets[i][j].dy = 0;
+			    	        enemyBullets[i][j].x = enemyShips[i].x + enemyShips[i].width/2 - enemyBullets[i][j].width/2,
+			            	enemyBullets[i][j].y = enemyShips[i].y;
+			            }
+			        }
+		        });
             }
         }
 		for(let i = 0; i < enemyShips.length; i++){	
             if(enemyShips[i].y>0){
-					
-					
-                if(scene.collision(playerShip,enemyShips[i])){
+				if(scene.collision(playerShip,enemyShips[i])){
 					playerExplosion.explos = true;
 					enemyExplosions[i].explos = true;
 					playerExplosion.x = playerShip.x;
 				    playerExplosion.y = playerShip.y;
                     enemyExplosions[i].x = enemyShips[i].x;
 					enemyExplosions[i].y = enemyShips[i].y;
-					enemyShips[i].y =  (enemyShips.length-1)*-ENEMY_START_POSITION+ENEMY_START_POSITION;
-			 		if(enemyShips[i].ind == 1){
-			    	enemyShips[i].live = 1;
-		         	}
-					//enemyShips[i].die = true;
-				    }
-                }
-            
+					//enemyShips[i].y =  (enemyShips.length-1)*-ENEMY_START_POSITION+ENEMY_START_POSITION;
+			 		//if(enemyShips[i].ind == 1){
+			    	//enemyShips[i].live = 1;
+		         	//}
+					enemyShips[i].die = true;
+				}
+            }
         }
-
     } 
-	
 	function illuminationObject(){
 		playerShip.illuminationObject();
 		enemyShips.forEach(enemy=>{
-			enemy.illuminationObject();
+		    enemy.illuminationObject();
 		});
 		playerBullets.forEach(bull=>{
-		bull.illuminationObject();
+		    bull.illuminationObject();
 		});
 		for(let i = 0; i < enemyBullets.length; i++){	
   	        for(let j = 0; j < enemyBullets[i].length; j++){
@@ -415,49 +307,139 @@ const game = function(){
 		}
 	}
 
-	
 	function deleteEnemy(){
-		
 		for(let i = 0; i<enemyShips.length; i ++){
 			if(enemyShips[i].die == true){
-		enemyShips.splice(i,1);
-						i--;
-		}
-		
+		        enemyShips.splice(i,1);
+		        createNewEnemyShip();
+				i--;
+		    }
 		}
 	}
 
 	function restart(){
-	
-	for(let i = 0; i < enemyBullets.length; i++){	
-	
-		    for(let j = 0; j < enemyBullets[i].length; j++){
-			 enemyBullets[i][j].x = enemyShips[i].x + enemyShips[i].width/2 - enemyBullets[i][j].width/2,
-			 enemyBullets[i][j].y = enemyShips[i].y+enemyShips[i].height/2;
-			 enemyBullets[i][j].dy=0;
+	alert("Game_over");
+    enemyShips = [];
+	playerBullets = [];
+	for(let i = 0; i<enemyBullets.length; i++){
+		enemyBullets[i] = [];
+		for(let j = 0; j<enemyBullets[i].length; j++){
+	        enemyBullets = [];
 	    }
 	}
-    playerBullInd = 0;
-    enemyBullInd = 0;
-	playerShip.x = scene.WIDTH/2 - playerShip.width/2;
-							playerShip.y = scene.HEIGHT - 100;
-							playerShip.shootSpeed = 300;
-	playerBullets.forEach(bull=>{
-		        bull.dy = 0;
-				bull.x = playerShip.x + playerShip.width/2 - bull.width/2, bull.y = playerShip.y;
-			});
-	for(let i = 0; i < enemyShips.length; i++){
-	if(i == 0){
-								enemyShips[i].y = -ENEMY_START_POSITION-scene.HEIGHT;
-							}else{
-								enemyShips[i].y = i*-ENEMY_START_POSITION;
-							}
-	}
 	//createEnemyShip();
-	// scene.setGameLoop(game);
+	 scene.setGameLoop(game);
 	}
+	
+	function createNewEnemyShip(){
+        let rand = Math.floor(Math.random() * 2);			
+            enemyShip = new scene.GBT_Image({url : urls[rand],
+                                             width : scene.WIDTH/10,
+											 height : scene.HEIGHT/10,
+							                 y : -scene.HEIGHT-ENEMY_START_POSITION,
+							                 x : Math.floor(Math.random() * (scene.WIDTH-scene.WIDTH/10 - 
+							                                                (scene.WIDTH/10)/2) + 
+						                                                    (scene.WIDTH/10)/2),
+							                });
+        if(rand == 0){enemyShip.live = 0;
+					   enemyShip.shootSpeed = 800;
+					   enemyShip.dy = Math.round(scene.HEIGHT/120);
+					   }else if(rand == 1){
+						enemyShip.live = 1;
+						enemyShip.shootSpeed = 300;
+					    enemyShip.dy = Math.round(scene.HEIGHT/180);
+						}
+	    enemyShips.push(enemyShip);
+    }
 }
+    function createBg(){
+	    for(let i = 0; i < 2; i++){
+	        bg[i] = new scene.GBT_Image({url : "http://ask-like.net/uploads/posts/2013-03/1364660574_ga_camoq2pg.jpg",
+                                         x : 0, y : i*-scene.HEIGHT,
+                                         dy : Math.round(scene.HEIGHT/210),
+						                 width : scene.WIDTH, height : scene.HEIGHT+1,
+		                                });
+        }
+	}
+    
+	function createEnemyShips(){
+		for(let i = 0; i < 6; i++){
+            let rand = Math.floor(Math.random() * 2);			
+		    enemyShip = new scene.GBT_Image({url : urls[rand],
+                                            width : scene.WIDTH/10, 
+											height : scene.HEIGHT/10,
+							                y : i*-scene.HEIGHT-ENEMY_START_POSITION,
+							                x : Math.floor(Math.random() * (scene.WIDTH-scene.WIDTH/10 - 
+							                                               (scene.WIDTH/10)/2) + 
+						                                                   (scene.WIDTH/10)/2),
+							                });
+            if(rand == 0){enemyShip.live = 0;
+					      enemyShip.shootSpeed = 800;
+						  if(enemyShip.load == true){
+					         enemyShip.dy = Math.round(scene.HEIGHT/120);
+						  }
+					    	}else if(rand == 1){
+							    enemyShip.live = 1;
+							    enemyShip.shootSpeed = 300;
+							    if(enemyShip.load == true){
+					                enemyShip.dy = Math.round(scene.HEIGHT/180);
+								}
+						    }				
+		    enemyShips.push(enemyShip);														  
+																  															  
+		    enemyExplosion = new scene.GBT_Animation({url : "res/bum.png",
+	                                                  width: enemyShips[i].width*1.5, height : enemyShips[i].height*1.5,
+	                                                  endFrameX : 4,
+	                                                  endFrameY : 4,
+                                                      animationOnXY : true,
+	                                                  fps : 1000/60
+                                                       });
+		    enemyExplosion.explos = false; 
+		    enemyExplosions.push(enemyExplosion);
+		    enemyShoot[i] = new scene.GBT_TimerOut();
+		    enemyBullets[i] = [];
+            	for(let j = 0; j < 10; j++){		
+		            enemyBullet = new scene.GBT_Image({url : "res/bullenemy.png",
+                                                       dx : 0, dy : 0,
+													   width : enemyShips[i].width/5,
+													   height : enemyShips[i].height/5
+							                            });
+		            enemyBullets[i].push(enemyBullet);	
+                    enemyBullets.push(enemyBullet);
+		        }
+		}
+	}
 
+	function createPlayerShip(){
+		playerShip = new scene.GBT_Image({url : "res/ship.png",
+                                          width : scene.WIDTH/10, 
+										  height : scene.HEIGHT/10,
+							              dx : 0, dy : 0
+						                 });
+		playerShip.x = scene.WIDTH/2 - playerShip.width/2;
+		playerShip.y = scene.HEIGHT - 100;
+		playerShip.shootSpeed = 300;
+							
+		playerExplosion = new scene.GBT_Animation({url : "res/bum.png",
+	                                               width: playerShip.width*1.5, height : playerShip.height*1.5,
+	                                               endFrameX : 4,
+	                                               endFrameY : 4,
+                                                   animationOnXY : true,
+	                                               fps : 1000/60
+                                                    });
+														
+		//playerExplosion.explos = false;	
+		    for(let i = 0; i < 10; i++){
+		        playerBullet= new scene.GBT_Image({url : "res/clash2.png",
+                                                   width : playerShip.width/5,
+								                   height : playerShip.height/5,
+							                       });	
+				playerBullets.push(playerBullet);								   
+		    }
+
+	}
+
+	
 const gameOver = function(){
 	
 	this.create = function(){
@@ -465,7 +447,7 @@ const gameOver = function(){
     }			
 		
 	this.update = function(){
-    scene.setGameLoop(game);
+  
 	}
     
     this.render = function(){
@@ -474,25 +456,6 @@ const gameOver = function(){
     
 }
 
-
-
-let animation;
-const anim = function(){
-	
-	this.create = function(){
-   
-    }			
-		
-	this.update = function(){
-
-	}
     
-    this.render = function(){
-        
-    }
-    
-}
-
 
 scene.gameLoop(game);
-//ctx.drawImage(characterImg,0,characterImg.height/4,characterImg.width/4,characterImg.height/4,0,0,64,64);

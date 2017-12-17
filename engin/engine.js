@@ -1,64 +1,43 @@
 let thisUpdateScene;
 let thisRenderScene;
-//let game;
-let resourse = 0;
-let loadCount = 0;
-let resourseAnimation = 0;
-let loadCountAnimation = 0;
 const canvas = document.createElement("canvas");
 document.body.appendChild(canvas);
 const ctx = canvas.getContext("2d");
-
-function GBT_Scene(obj)
-{
+function GBT_Scene(obj){
 	canvas.width = obj.width || 400;
 	canvas.height = obj.height || 400;
 	this.WIDTH = canvas.width;
 	this.HEIGHT = canvas.height;
 	canvas.style.background = obj.style || "white";
     this.game;
-GBT_Scene.prototype.gameLoop = function(scene)
-{
+GBT_Scene.prototype.gameLoop = function(scene){
     this.game = new scene();
 	this.game.create();
 	thisRenderScene = this.game.render;
 	thisUpdateScene = this.game.update;
-	
 	sceneStart();
 }
-GBT_Scene.prototype.setGameLoop = function(scene)
-{
-	resourse = 0;
-	loadCount = 0;
-	resourseAnimation = 0;
-	loadCountAnimation = 0;
+GBT_Scene.prototype.setGameLoop = function(scene){
 	this.game = new scene();
 	this.game.create();
 	thisRenderScene = this.game.render;
 	thisUpdateScene = this.game.update;
-	
 }
-
-function sceneRequestAnimationFrame(scene)
-{
+function sceneRequestAnimationFrame(scene){
 requestAnimationFrame(scene);
 }
-function sceneStart()
-{
+function sceneStart(){
 	clearContext();
-	if(resourse == loadCount && resourseAnimation == loadCountAnimation){
-	
-    thisRenderScene();
+	thisRenderScene();
 	thisUpdateScene();
-	}
     sceneRequestAnimationFrame(sceneStart);
 }
 function clearContext(){
 	ctx.clearRect(0,0,canvas.width,canvas.height);
 }
-var lastLoop = new Date();
-var lastDraw = 0;
-var f = 0;
+let lastLoop = new Date();
+let lastDraw = 0;
+let f = 0;
 this.fpsDraw = function(x,y,size,color){
 	this.x = x || 0;
     this.y = y || 48;
@@ -68,121 +47,96 @@ this.fpsDraw = function(x,y,size,color){
     var fps = 1000 / (thisLoop - lastLoop);
 	lastLoop = thisLoop;
 	if(new Date().getTime() - lastDraw > 500){
-    f = fps;
-	lastDraw = new Date().getTime();
+       f = fps;
+	   lastDraw = new Date().getTime();
     }
 	ctx.fillStyle = this.style;
 	ctx.font = this.sizeText;
     ctx.fillText("FPS: "+Math.round(f), this.x, this.y);
 }
-let url;
-let buff;
-this.GBT_Image = function(obj)
-{
-	        this.width = obj.width || canvas.width;
-		    this.height = obj.height || canvas.height;
-	        this.url = obj.url || 0;
-		    this.x = obj.x || 0;
-		    this.y = obj.y || 0;
-			this.dx = obj.dx || 0;
-			this.dy = obj.dy || 0;
-            this.buff = document.createElement("canvas");
-			this.buff.width = this.width;
-			this.buff.height = this.height;
-			if(url != this.url){
-			buff = this.buff;
-			url = this.url;
-				resourse++;
-			load(this.url).then(image=>
-			{
+let url = new Map();
+let buff = new Map();
+this.GBT_Image = function(obj){
+	this.width = obj.width || canvas.width;
+	this.height = obj.height || canvas.height;
+	this.x = obj.x || 0;
+	this.y = obj.y || 0;
+	this.dx = obj.dx || 0;
+	this.dy = obj.dy || 0;
+    this.url = obj.url || 0;
+    this.buff = document.createElement("canvas");
+	this.buff.width = this.width;
+	this.buff.height = this.height;
+		if(url.get(this.url) != this.url){
+			//buff = this.buff;
+			url.set(this.url,this.url);
+			buff.set(this.url,this.buff);
+			load(this.url).then(image=>{
 				this.buff.getContext("2d").drawImage(image,0,0,this.width,this.height);
-				loadCount++;
+				this.load = true;
 			});
 			}else{
-				this.buff = buff;
+				this.buff = buff.get(this.url);
+				this.load = true;
 			}
 }
-this.GBT_Image.prototype.draw = function()
-{
-		//	if(resourse == loadCount){
-			ctx.beginPath();
-			ctx.drawImage(this.buff,this.x,this.y,this.buff.width,this.buff.height);
-			ctx.closePath();
-		//	}
+this.GBT_Image.prototype.draw = function(){
+	if(this.load == true){
+        ctx.beginPath();
+	    ctx.drawImage(this.buff,this.x,this.y,this.buff.width,this.buff.height);
+	    ctx.closePath();
+	}
 }
 this.GBT_Image.prototype.illuminationObject = function(){
-	        	ctx.beginPath();
-	            ctx.strokeStyle = "white";
-                ctx.strokeRect(this.x,this.y,this.width,this.height);
-	            ctx.closePath();
+	ctx.beginPath();
+	ctx.strokeStyle = "white";
+    ctx.strokeRect(this.x,this.y,this.width,this.height);
+	ctx.closePath();
 }
-function load(url)
-{
-	return new Promise(resolve =>
-	{
+function load(url){
+	return new Promise(resolve =>{
 		const image = new Image();
-		image.addEventListener("load",() =>
-		{
+		image.addEventListener("load",() =>{
 			resolve(image);
-			
 		});
 		image.src = url;
 	});
 
 }
-const keys = {"LEFT":37,
-              "RIGHT":39,
-		      "UP":38,
-			  "DOWN":40,
-			  "SPACE":32,
-	      "Q":81,
-	      "W":87,"E":69,"R":82,"T":84,"Y":89,
-	      "U":85,"I":73,"O":79,"P":80,"A":65,"S":83,"D":68,
-	      "F":70,"G":71,"H":72,"J":74,"K":75,"L":76,
-	      "Z":90,"X":88,"V":86,"B":66,"N":78,"M":77
-           }
+const keys = {"LEFT":37,"RIGHT":39,"UP":38,"DOWN":40,"SPACE":32,"Q":81,"W":87,"E":69,"R":82,"T":84,"Y":89,"U":85,"I":73,"O":79,"P":80,"A":65,"S":83,"D":68,"F":70,"G":71,"H":72,"J":74,"K":75,"L":76,"Z":90,"X":88,"V":86,"B":66,"N":78,"M":77}
 let keyDown = {};
-this.GBT_KeyDown = function(keyName)
-{
+this.GBT_KeyDown = function(keyName){
     return  keyDown[keys[keyName]] == true;
 }
-addEventListener("keydown", function(event)
-	{
-       setKey(event.keyCode);
-	});
-	addEventListener("keyup", function(event)
-	{
-        clearKey(event.keyCode);
-    });
-function setKey(e)
-{
+addEventListener("keydown", function(event){
+    setKey(event.keyCode);
+});
+addEventListener("keyup", function(event){
+    clearKey(event.keyCode);
+});
+function setKey(e){
 	keyDown[e] = true;
 }
-function clearKey(e)
-{
+function clearKey(e){
 	keyDown[e] = false;
 }
-
 this.GBT_TimerOut = function(){
-        this.startTimer = false;
-        this.started;
-		this.timer = new Date().getTime();
-	}
+    this.startTimer = false;
+    this.started;
+    this.timer = new Date().getTime();
+}
 this.GBT_TimerOut.prototype.start = function(f,t){
     this.t = t;
     this.f = f;
 	if(new Date().getTime() - this.timer > this.t){
-    this.f();
-	this.timer = new Date().getTime();
+        this.f();
+	    this.timer = new Date().getTime();
 	}
 }
-
 this.collision = function(obj_1, obj_2){
 return obj_1.x<=obj_2.x+obj_2.width && obj_1.x+obj_1.width>=obj_2.x 
     && obj_1.y<=obj_2.y+obj_2.height && obj_1.y+obj_1.height>=obj_2.y;
 }
-
-
 this.GBT_Animation = function(obj){
 	this.url = obj.url;
 	this.x = obj.x || 0;
@@ -200,7 +154,6 @@ this.GBT_Animation = function(obj){
 	this.animationOnY = obj.animationOnY || false;
 	this.timer = new Date().getTime();
 	this.fps = obj.fps || 1000/60;
-	resourseAnimation++;
 	this.buff = [];
 	for(let i=0; i<=this.efX; i++){
 		this.buff[i] = [];
@@ -210,62 +163,52 @@ this.GBT_Animation = function(obj){
 	        this.buff[i][j].height = this.height;
 	}
 	}
-	load(this.url).then(image=>
-	{
+	load(this.url).then(image=>{
         this.sWidth = obj.spriteWidth || image.width/this.efX;
         this.sHeight = obj.spriteHeight || image.height/this.efY;
-		
-			for(let i=this.sfX; i<=this.efX; i++){
-			
-		for(let j=this.sfY; j<=this.efY; j++){
-		this.buff[i][j].getContext("2d").drawImage(image,(i)*this.sWidth,(j)*this.sHeight,this.sWidth,this.sHeight,0,0,this.width,this.height);
-			
-		}
+		    for(let i=this.sfX; i<=this.efX; i++){
+			    for(let j=this.sfY; j<=this.efY; j++){
+		            this.buff[i][j].getContext("2d").drawImage(image,(i)*this.sWidth,(j)*this.sHeight,this.sWidth,this.sHeight,0,0,this.width,this.height);
+			    }
 			}
-			loadCountAnimation++;
+		this.load = true;
 	});
 }
-
-this.GBT_Animation.prototype.draw = function()
-{
-
-		//	if(resourseAnimation == loadCountAnimation){
-				if(new Date().getTime() - this.timer > this.fps){
-					if(this.animationOnXY == true){
+this.GBT_Animation.prototype.draw = function(){
+    if(this.load==true){
+		if(new Date().getTime() - this.timer > this.fps){
+		    if(this.animationOnXY == true){
                 this.cfX++;
 				if(this.cfX>=this.efX){
 					this.cfX=this.sfX;
 					this.cfY++;
-				if(this.cfY>=this.efY){
-					this.cfY=this.sfY;
+				    if(this.cfY>=this.efY){
+				    	this.cfY=this.sfY;
+				    }
 				}
-	
-				}
-				}
-				if(this.animationOnX == true){
-					 this.cfX++;
-					 this.cfY=this.sfY;
+			}
+			if(this.animationOnX == true){
+				this.cfX++;
+			    this.cfY=this.sfY;
 				if(this.cfX>=this.efX){
 					this.cfX=this.sfX;
 				}
-				}
-				if(this.animationOnY == true){
-					this.cfY++;
-					this.cfX=this.sfX;
+			}
+			if(this.animationOnY == true){
+				this.cfY++;
+				this.cfX=this.sfX;
 				if(this.cfY>=this.efY){
 					this.cfY=this.sfY;
 				}
-				}
-                	this.timer = new Date().getTime();
-				}
-            ctx.beginPath();
-			ctx.drawImage(this.buff[this.cfX][this.cfY],this.x,this.y,
-			                                  this.buff[this.cfX][this.cfY].width,
-			                                  this.buff[this.cfX][this.cfY].height);
-			ctx.closePath();
-			
-
-		//	}
+			}
+            this.timer = new Date().getTime();
+		}
+        ctx.beginPath();
+		ctx.drawImage(this.buff[this.cfX][this.cfY],this.x,this.y,
+			                              this.buff[this.cfX][this.cfY].width,
+			                              this.buff[this.cfX][this.cfY].height);
+	    ctx.closePath();
+	}
 }
 this.GBT_Animation.prototype.setCurrentFrameX = function(cfX){
 	 this.cfX = cfX;
