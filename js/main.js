@@ -25,10 +25,11 @@ let enemyShoot = [];
 let enemyShipsTimerMove  = new scene.GBT_TimerOut();	
 
 const game = function(){
-    alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE \n для старта нажмите левой кнопкой мыши по екрану игры");
+   
 	this.create = function(){
+		 alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE \n для старта нажмите левой кнопкой мыши по екрану игры");
 		createEnemyShips();
-        createBg();
+                createBg();
 		createPlayerShip();
     }			
 		
