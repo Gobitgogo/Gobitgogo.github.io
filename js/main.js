@@ -23,11 +23,11 @@ let enemyBullInd = 0;
 let playerShoot = new scene.GBT_TimerOut();
 let enemyShoot = [];
 let enemyShipsTimerMove  = new scene.GBT_TimerOut();	
-
+ alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE \n для старта нажмите левой кнопкой мыши по екрану игры");
+		
 const game = function(){
    
 	this.create = function(){
-		 alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE \n для старта нажмите левой кнопкой мыши по екрану игры");
 		createEnemyShips();
                 createBg();
 		createPlayerShip();
