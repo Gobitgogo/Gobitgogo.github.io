@@ -168,9 +168,11 @@ const game = function(){
 	}
   
     function enemyShipsMove(){
-		for(let i = 0; i < enemyShips.length; i++){	
-		    enemyShips[i].x += enemyShips[i].dx;
-		    enemyShips[i].y += enemyShips[i].dy;
+		for(let i = 0; i < enemyShips.length; i++){
+			 if(enemyShip.load == true){
+		              enemyShips[i].x += enemyShips[i].dx;
+		              enemyShips[i].y += enemyShips[i].dy;
+			 }
 		    if(enemyShips[i].x>=scene.WIDTH-enemyShips[i].width){
 		    	let rand = Math.floor(Math.random() * -3)+1;
 		        enemyShips[i].dx = rand
@@ -376,16 +378,12 @@ const game = function(){
 							                });
             if(rand == 0){enemyShip.live = 0;
 					      enemyShip.shootSpeed = 800;
-						  if(enemyShip.load == true){
-					         enemyShip.dy = Math.round(scene.HEIGHT/120);
-						  }
-					    	}else if(rand == 1){
+						 enemyShip.dy = Math.round(scene.HEIGHT/120);
+						}else if(rand == 1){
 							    enemyShip.live = 1;
 							    enemyShip.shootSpeed = 300;
-							    if(enemyShip.load == true){
-					                enemyShip.dy = Math.round(scene.HEIGHT/180);
-								}
-						    }				
+							   enemyShip.dy = Math.round(scene.HEIGHT/180);
+							}				
 		    enemyShips.push(enemyShip);														  
 																  															  
 		    enemyExplosion = new scene.GBT_Animation({url : "res/bum.png",
