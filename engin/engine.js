@@ -272,10 +272,13 @@ let p;
 this.textDraw.prototype.onclick = function(){
     canvas.addEventListener('click', this.checkStart, false);
     if(p!=null){
-        return (p.x >= this.rect.x && p.x <= this.rect.x + this.rect.w &&
-        p.y >= this.rect.y && p.y <= this.rect.y + this.rect.h);
+        if(p.x >= this.rect.x && p.x <= this.rect.x + this.rect.w &&
+        p.y >= this.rect.y && p.y <= this.rect.y + this.rect.h){
+			p = null;
+			return true;
+		}
     }
-	p=null;
+	
 }
 this.textDraw.prototype.checkStart = function(e){
     p = getMousePosition(e);
