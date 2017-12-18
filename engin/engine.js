@@ -248,17 +248,17 @@ this.textDraw = function(obj){
     this.y = obj.y || obj.size;
 	this.position = obj.position || 0;
 	ctx.textAlign = "left";
+	this.t = ctx.measureText(this.text);
+	this.width = this.t.width;
 	if(this.position != 0){
-		ctx.textAlign = "center";
-		this.x = obj.x || canvas.width/2;//obj.size;
-        this.y = obj.y || canvas.height/2;
+		this.x = obj.x || canvas.width/2 - this.width/2;//obj.size;
+        this.y = obj.y || canvas.height/2-obj.size/2;
 	}
     ctx.beginPath();
 	ctx.fillStyle = this.color;
 	ctx.font = this.size;
 	ctx.fillText(this.text, this.x, this.y);
-	this.t = ctx.measureText(this.text);
-	this.width = this.t.width;
+
 	this.height = obj.size;
 	this.rect = {
     x: this.x,
@@ -266,6 +266,7 @@ this.textDraw = function(obj){
     w: this.width,
     h: obj.size
     };
+	//ctx.fillRect(this.rect.x,this.y-obj.size,this.width,this.height);
 	ctx.closePath();
 }
 let p;
