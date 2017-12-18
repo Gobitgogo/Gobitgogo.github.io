@@ -494,7 +494,7 @@ const gameOver = function(){
 	    }
 	     publish = new scene.textDraw({text : "Publish on VK",position : "center", y : start.y+start.width/2, size : 40,color : "white"});
 	    if(publish.onclick()){
-	    	VK.api("wall.post", {"message": "Я набрал "+scor+" очков в приложении SpaceShoter, а сколько сможешь ты?"}, function (data) {
+	    	VK.api("wall.post", {"message": "https://vk.com/app6300619_57832844 n\ Я набрал "+scor+" очков в приложении SpaceShoter, а сколько сможешь ты?"}, function (data) {
             //alert("Post ID:" + data.response.post_id);
             });
 	    }
