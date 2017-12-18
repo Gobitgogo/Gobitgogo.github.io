@@ -492,7 +492,7 @@ const gameOver = function(){
 	    if(start.onclick()){
 	    	scene.setGameLoop(game);
 	    }
-	     publish = new scene.textDraw({text : "Publish on VK",position : "center", y : start.y+start.width/2, size : 40,color : "white"});
+	     publish = new scene.textDraw({text : "Publish on VK",position : "center", y : start.y+start.width/2, size : 40,color : "#45688E"});
 	    if(publish.onclick()){
 	    	VK.api("wall.post", {"message": "https://vk.com/app6300619_57832844 \n Я набрал "+scor+" очков в приложении SpaceShoter, а сколько сможешь ты?",
 				     "attachments" : "photo57832844_456239466"   }, function (data) {
