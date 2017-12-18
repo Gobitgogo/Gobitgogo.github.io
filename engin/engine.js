@@ -15,7 +15,7 @@ click = false;
 addEventListener("click", function(){
    click = true;
 });
-this.getClick = function(){
+this.onclick = function(){
 	this.click = true
 	return this.click == click;
 }
@@ -250,15 +250,43 @@ this.textDraw = function(obj){
 	ctx.textAlign = "left";
 	if(this.position != 0){
 		ctx.textAlign = "center";
-		this.x = obj.x || this.WIDTH/2;//obj.size;
-        this.y = obj.y || this.HEIGHT/2;
+		this.x = obj.x || canvas.width/2;//obj.size;
+        this.y = obj.y || canvas.height/2;
 	}
     ctx.beginPath();
 	ctx.fillStyle = this.color;
 	ctx.font = this.size;
-    ctx.fillText(this.text, this.x, this.y);
+	ctx.fillText(this.text, this.x, this.y);
+	this.t = ctx.measureText(this.text);
+	this.width = this.t.width;
+	this.height = obj.size;
+	this.rect = {
+    x: this.x,
+    y: this.y-obj.size,
+    w: this.width,
+    h: obj.size
+    };
 	ctx.closePath();
 }
+let p;
+this.textDraw.prototype.onclick = function(){
+    canvas.addEventListener('click', this.checkStart, false);
+    if(p!=null){
+        return (p.x >= this.rect.x && p.x <= this.rect.x + this.rect.w &&
+        p.y >= this.rect.y && p.y <= this.rect.y + this.rect.h);
+    }
+}
+this.textDraw.prototype.checkStart = function(e){
+    p = getMousePosition(e);
+}
+getMousePosition = function(e) {
+    let r = canvas.getBoundingClientRect();
+    return {
+        x: e.clientX - r.left || 0,
+        y: e.clientY - r.top || 0
+    };
+}
+
 }
 
 

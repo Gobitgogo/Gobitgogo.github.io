@@ -25,16 +25,17 @@ let enemyShoot = [];
 let enemyShipsTimerMove  = new scene.GBT_TimerOut();
 let scor = 0;	
 
-VK.init(function() { 
-     console.log("1"); 
+ alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE.");
+
+  VK.init(function() { 
+     // API initialization succeeded 
+     // Your code here 
   }, function() { 
      // API initialization failed 
      // Can reload page here 
 }, '5.69'); 
- 
 
- alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE.");
-
+  
 function createBg(){
 	for(let i = 0; i < 2; i++){
 	    bg[i] = new scene.GBT_Image({url : "http://ask-like.net/uploads/posts/2013-03/1364660574_ga_camoq2pg.jpg",
@@ -477,17 +478,27 @@ const gameOver = function(){
 		
 	this.update = function(){
         bgMove();
-        if(scene.getClick()){
+       /* if(scene.onclick()){
 		    scene.setGameLoop(game);
-	    }
+	    }*/
 	}
     
     this.render = function(){
 		for(let i = 0; i <bg.length;i++){
 		    bg[i].draw();
 		}
-    scores = scene.textDraw({text : "You scores: " + scor,position : "center",y : scene.HEIGHT/3, size : 50,color : "white"});
-	start = scene.textDraw({text : "Click to start",position : "center", size : 25,color : "white"});
+        scores = new scene.textDraw({text : "You scores: " + scor,position : "center",y : scene.HEIGHT/3, size : 50,color : "white"});
+	    start = new scene.textDraw({text : "Click to start",position : "center", size : 40,color : "white"});
+	    if(start.onclick()){
+	    	scene.setGameLoop(game);
+	    }
+	     publish = new scene.textDraw({text : "Publish on VK",position : "center", y : start.y+start.width/2, size : 40,color : "white"});
+	    if(publish.onclick()){
+	    	VK.api("wall.post", {"message": "Я набрал "+scor+" очков в приложении SpaceShoter, а сколько сможешь ты?"}, function (data) {
+            //alert("Post ID:" + data.response.post_id);
+            });
+	    }
+
     }
     
 }
@@ -500,18 +511,17 @@ const startGame = function(){
 		
 	this.update = function(){
 		bgMove();
-        if(scene.getClick()){
-		    scene.setGameLoop(game);
-	    }
 	}
     
     this.render = function(){
 		for(let i = 0; i <bg.length;i++){
 		    bg[i].draw();
 		}
-	    start = scene.textDraw({text : "Click to start",position : "center", size : 25,color : "white"});
+	    start = new scene.textDraw({text : "Click to start", position : "center", size : 50,color : "white"});
+		if(start.onclick()){
+		    scene.setGameLoop(game);
+		}
     }
-
 }
 
     
