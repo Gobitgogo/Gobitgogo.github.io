@@ -275,6 +275,7 @@ this.textDraw.prototype.onclick = function(){
         return (p.x >= this.rect.x && p.x <= this.rect.x + this.rect.w &&
         p.y >= this.rect.y && p.y <= this.rect.y + this.rect.h);
     }
+	p=null;
 }
 this.textDraw.prototype.checkStart = function(e){
     p = getMousePosition(e);
