@@ -4,12 +4,21 @@ const canvas = document.createElement("canvas");
 document.body.appendChild(canvas);
 const ctx = canvas.getContext("2d");
 function GBT_Scene(obj){
+
 	canvas.width = obj.width || 400;
 	canvas.height = obj.height || 400;
 	this.WIDTH = canvas.width;
 	this.HEIGHT = canvas.height;
 	canvas.style.background = obj.style || "white";
     this.game;
+click = false;
+addEventListener("click", function(){
+   click = true;
+});
+this.getClick = function(){
+	this.click = true
+	return this.click == click;
+}
 GBT_Scene.prototype.gameLoop = function(scene){
     this.game = new scene();
 	this.game.create();
@@ -22,6 +31,7 @@ GBT_Scene.prototype.setGameLoop = function(scene){
 	this.game.create();
 	thisRenderScene = this.game.render;
 	thisUpdateScene = this.game.update;
+	click = false;
 }
 function sceneRequestAnimationFrame(scene){
 requestAnimationFrame(scene);
@@ -50,9 +60,11 @@ this.fpsDraw = function(x,y,size,color){
        f = fps;
 	   lastDraw = new Date().getTime();
     }
+	ctx.beginPath();
 	ctx.fillStyle = this.style;
 	ctx.font = this.sizeText;
     ctx.fillText("FPS: "+Math.round(f), this.x, this.y);
+	ctx.closePath();
 }
 let url = new Map();
 let buff = new Map();
@@ -227,6 +239,25 @@ this.GBT_Animation.prototype.getEndFrameX = function(){
 }
 this.GBT_Animation.prototype.getEndFrameY = function(){
 	return this.efY;
+}
+this.textDraw = function(obj){
+    this.color =  obj.color || "green";
+	this.size = obj.size + "px serif" || "48px serif";
+	this.text = obj.text || " ";
+	this.x = obj.x || 0;//obj.size;
+    this.y = obj.y || obj.size;
+	this.position = obj.position || 0;
+	ctx.textAlign = "left";
+	if(this.position != 0){
+		ctx.textAlign = "center";
+		this.x = obj.x || this.WIDTH/2;//obj.size;
+        this.y = obj.y || this.HEIGHT/2;
+	}
+    ctx.beginPath();
+	ctx.fillStyle = this.color;
+	ctx.font = this.size;
+    ctx.fillText(this.text, this.x, this.y);
+	ctx.closePath();
 }
 }
 

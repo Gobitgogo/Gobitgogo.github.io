@@ -1,8 +1,8 @@
-let width = 600;
-let height = 480;
-//let width = window.innerWidth - 20;
-//let height = window.innerHeight - 20;
-//if(width>height){width=height;}
+//let width = 600;
+//let height = 480;
+let width = window.innerWidth - 20;
+let height = window.innerHeight - 20;
+if(width>height){width=height;}
 const scene = new GBT_Scene({width : width,
                            height : height,
 					       style : "grey"
@@ -22,15 +22,37 @@ let playerBullInd = 0;
 let enemyBullInd = 0;
 let playerShoot = new scene.GBT_TimerOut();
 let enemyShoot = [];
-let enemyShipsTimerMove  = new scene.GBT_TimerOut();	
- alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE \n для старта нажмите левой кнопкой мыши по екрану игры");
-		
+let enemyShipsTimerMove  = new scene.GBT_TimerOut();
+let scor = 0;	
+
+ alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE.");
+
+function createBg(){
+	for(let i = 0; i < 2; i++){
+	    bg[i] = new scene.GBT_Image({url : "http://ask-like.net/uploads/posts/2013-03/1364660574_ga_camoq2pg.jpg",
+                                         x : 0, y : i*-scene.HEIGHT,
+                                         dy : Math.round(scene.HEIGHT/210),
+						                 width : scene.WIDTH, height : scene.HEIGHT+1,
+		                                });
+        }
+}
+
+function bgMove(){
+	for(let i = 0; i <bg.length;i++){
+		bg[i].y+=bg[i].dy;
+			if(bg[i].y>=scene.HEIGHT) {
+				bg[i].y = -scene.HEIGHT+1
+			};
+		}
+}
+
 const game = function(){
    
 	this.create = function(){
 		createEnemyShips();
-                createBg();
+        createBg();
 		createPlayerShip();
+        scor = 0;
     }			
 		
 	this.update = function(){
@@ -43,6 +65,7 @@ const game = function(){
 		//illuminationObject();
         collision();
 		deleteEnemy();
+
 		//scene.fpsDraw(0,48,48,"red");
 	}
 		
@@ -91,6 +114,7 @@ const game = function(){
 		for(let i = 0; i < enemyShips.length; i++){
             enemyShips[i].draw();			 
 		}
+		scores = scene.textDraw({text : "Scores: " + scor, size : 25,color : "white"});
 	}
 	
 	function handleInput(){
@@ -168,11 +192,11 @@ const game = function(){
 	}
   
     function enemyShipsMove(){
-		for(let i = 0; i < enemyShips.length; i++){
-			 if(enemyShip.load == true){
-		              enemyShips[i].x += enemyShips[i].dx;
-		              enemyShips[i].y += enemyShips[i].dy;
-			 }
+		for(let i = 0; i < enemyShips.length; i++){	
+		    if(enemyShips[i].load == true){
+		        enemyShips[i].x += enemyShips[i].dx;
+		        enemyShips[i].y += enemyShips[i].dy;
+			}
 		    if(enemyShips[i].x>=scene.WIDTH-enemyShips[i].width){
 		    	let rand = Math.floor(Math.random() * -3)+1;
 		        enemyShips[i].dx = rand
@@ -238,6 +262,12 @@ const game = function(){
 						    enemyExplosions[i].explos = true;
 						    enemyExplosions[i].x = enemyShips[i].x;
 						    enemyExplosions[i].y = enemyShips[i].y;
+							if(enemyShips[i].shipClass == 0){
+								scor+=50;
+							}
+							if(enemyShips[i].shipClass == 1){
+								scor+=100;
+							}
 						    //enemyShips[i].y =  (enemyShips.length-1)*-ENEMY_START_POSITION+ENEMY_START_POSITION;
 						    //if(enemyShips[i].ind == 1){
 				            // enemyShips[i].live = 1;
@@ -321,7 +351,6 @@ const game = function(){
 	}
 
 	function restart(){
-	alert("Game_over");
     enemyShips = [];
 	playerBullets = [];
 	for(let i = 0; i<enemyBullets.length; i++){
@@ -330,8 +359,7 @@ const game = function(){
 	        enemyBullets = [];
 	    }
 	}
-	//createEnemyShip();
-	 scene.setGameLoop(game);
+	 scene.setGameLoop(gameOver);
 	}
 	
 	function createNewEnemyShip(){
@@ -347,26 +375,18 @@ const game = function(){
         if(rand == 0){enemyShip.live = 0;
 					   enemyShip.shootSpeed = 800;
 					   enemyShip.dy = Math.round(scene.HEIGHT/120);
+					   enemyShip.shipClass = 0;
 					   }else if(rand == 1){
 						enemyShip.live = 1;
 						enemyShip.shootSpeed = 300;
 					    enemyShip.dy = Math.round(scene.HEIGHT/180);
+						enemyShip.shipClass = 1;
 						}
 	    enemyShips.push(enemyShip);
     }
 }
-    function createBg(){
-	    for(let i = 0; i < 2; i++){
-	        bg[i] = new scene.GBT_Image({url : "http://ask-like.net/uploads/posts/2013-03/1364660574_ga_camoq2pg.jpg",
-                                         x : 0, y : i*-scene.HEIGHT,
-                                         dy : Math.round(scene.HEIGHT/210),
-						                 width : scene.WIDTH, height : scene.HEIGHT+1,
-		                                });
-        }
-	}
-    
-	function createEnemyShips(){
-		for(let i = 0; i < 6; i++){
+    function createEnemyShips(){
+		for(let i = 0; i < 10; i++){
             let rand = Math.floor(Math.random() * 2);			
 		    enemyShip = new scene.GBT_Image({url : urls[rand],
                                             width : scene.WIDTH/10, 
@@ -378,11 +398,13 @@ const game = function(){
 							                });
             if(rand == 0){enemyShip.live = 0;
 					      enemyShip.shootSpeed = 800;
-						 enemyShip.dy = Math.round(scene.HEIGHT/120);
-						}else if(rand == 1){
+						  enemyShip.dy = Math.round(scene.HEIGHT/120);
+						  enemyShip.shipClass = 0;
+						  }else if(rand == 1){
 							    enemyShip.live = 1;
 							    enemyShip.shootSpeed = 300;
-							   enemyShip.dy = Math.round(scene.HEIGHT/180);
+							    enemyShip.dy = Math.round(scene.HEIGHT/180);
+								enemyShip.shipClass = 1;
 							}				
 		    enemyShips.push(enemyShip);														  
 																  															  
@@ -429,7 +451,7 @@ const game = function(){
 														
 		//playerExplosion.explos = false;	
 		    for(let i = 0; i < 10; i++){
-		        playerBullet= new scene.GBT_Image({url : "res/clash2.png",
+		        playerBullet = new scene.GBT_Image({url : "res/clash2.png",
                                                    width : playerShip.width/5,
 								                   height : playerShip.height/5,
 							                       });	
@@ -442,19 +464,48 @@ const game = function(){
 const gameOver = function(){
 	
 	this.create = function(){
-   
+        createBg();
     }			
 		
 	this.update = function(){
-  
+        bgMove();
+        if(scene.getClick()){
+		    scene.setGameLoop(game);
+	    }
 	}
     
     this.render = function(){
-        
+		for(let i = 0; i <bg.length;i++){
+		    bg[i].draw();
+		}
+    scores = scene.textDraw({text : "You scores: " + scor,position : "center",y : scene.HEIGHT/3, size : 50,color : "white"});
+	start = scene.textDraw({text : "Click to start",position : "center", size : 25,color : "white"});
     }
     
 }
 
+const startGame = function(){
+	
+	this.create = function(){
+        createBg();
+    }			
+		
+	this.update = function(){
+		bgMove();
+        if(scene.getClick()){
+		    scene.setGameLoop(game);
+	    }
+	}
+    
+    this.render = function(){
+		for(let i = 0; i <bg.length;i++){
+		    bg[i].draw();
+		}
+	    start = scene.textDraw({text : "Click to start",position : "center", size : 25,color : "white"});
+    }
+
+}
+
     
 
-scene.gameLoop(game);
+scene.gameLoop(startGame);
