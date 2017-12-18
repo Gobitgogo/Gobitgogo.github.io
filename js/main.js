@@ -25,6 +25,14 @@ let enemyShoot = [];
 let enemyShipsTimerMove  = new scene.GBT_TimerOut();
 let scor = 0;	
 
+VK.init(function() { 
+     console.log("1"); 
+  }, function() { 
+     // API initialization failed 
+     // Can reload page here 
+}, '5.69'); 
+ 
+
  alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE.");
 
 function createBg(){
