@@ -34,7 +34,7 @@ GBT_Scene.prototype.setGameLoop = function(scene){
 	click = false;
 }
 function sceneRequestAnimationFrame(scene){
-requestAnimationFrame(scene);
+requestAnimationFrame(scene)|| webkitRequestAnimationFrame(scene) || oRequestAnimationFrame(scene) || msRequestAnimationFrame(scene) || setTimeout(scene, 1000 / 60);
 }
 function sceneStart(){
 	clearContext();
