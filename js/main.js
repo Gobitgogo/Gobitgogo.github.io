@@ -59,8 +59,12 @@ const game = function(){
    
 	this.create = function(){
 		createEnemyShips();
+		createEnemyBullets();
+		createEnemyExplosions();
         createBg();
 		createPlayerShip();
+		createPlayerBullets();
+		createPlaterExplosion();
         scor = 0;
     }			
 		
@@ -353,7 +357,7 @@ const game = function(){
 		for(let i = 0; i<enemyShips.length; i ++){
 			if(enemyShips[i].die == true){
 		        enemyShips.splice(i,1);
-		        createNewEnemyShip();
+		        createEnemyShips();
 				i--;
 		    }
 		}
@@ -370,32 +374,9 @@ const game = function(){
 	}
 	 scene.setGameLoop(gameOver);
 	}
-	
-	function createNewEnemyShip(){
-        let rand = Math.floor(Math.random() * 2);			
-            enemyShip = new scene.GBT_Image({url : urls[rand],
-                                             width : scene.WIDTH/10,
-											 height : scene.HEIGHT/10,
-							                 y : -scene.HEIGHT-ENEMY_START_POSITION,
-							                 x : Math.floor(Math.random() * (scene.WIDTH-scene.WIDTH/10 - 
-							                                                (scene.WIDTH/10)/2) + 
-						                                                    (scene.WIDTH/10)/2),
-							                });
-        if(rand == 0){enemyShip.live = 0;
-					   enemyShip.shootSpeed = 800;
-					   enemyShip.dy = Math.round(scene.HEIGHT/120);
-					   enemyShip.shipClass = 0;
-					   }else if(rand == 1){
-						enemyShip.live = 1;
-						enemyShip.shootSpeed = 300;
-					    enemyShip.dy = Math.round(scene.HEIGHT/180);
-						enemyShip.shipClass = 1;
-						}
-	    enemyShips.push(enemyShip);
-    }
-}
+
     function createEnemyShips(){
-		for(let i = 0; i < 10; i++){
+		for(let i = enemyShips.length; i < 10; i++){
             let rand = Math.floor(Math.random() * 2);			
 		    enemyShip = new scene.GBT_Image({url : urls[rand],
                                             width : scene.WIDTH/10, 
@@ -416,27 +397,7 @@ const game = function(){
 								enemyShip.shipClass = 1;
 							}				
 		    enemyShips.push(enemyShip);														  
-																  															  
-		    enemyExplosion = new scene.GBT_Animation({url : "res/bum.png",
-	                                                  width: enemyShips[i].width*1.5, height : enemyShips[i].height*1.5,
-	                                                  endFrameX : 4,
-	                                                  endFrameY : 4,
-                                                      animationOnXY : true,
-	                                                  fps : 1000/60
-                                                       });
-		    enemyExplosion.explos = false; 
-		    enemyExplosions.push(enemyExplosion);
-		    enemyShoot[i] = new scene.GBT_TimerOut();
-		    enemyBullets[i] = [];
-            	for(let j = 0; j < 10; j++){		
-		            enemyBullet = new scene.GBT_Image({url : "res/bullenemy.png",
-                                                       dx : 0, dy : 0,
-													   width : enemyShips[i].width/5,
-													   height : enemyShips[i].height/5
-							                            });
-		            enemyBullets[i].push(enemyBullet);	
-                    enemyBullets.push(enemyBullet);
-		        }
+																  															  		
 		}
 	}
 
@@ -449,17 +410,11 @@ const game = function(){
 		playerShip.x = scene.WIDTH/2 - playerShip.width/2;
 		playerShip.y = scene.HEIGHT - 100;
 		playerShip.shootSpeed = 300;
-							
-		playerExplosion = new scene.GBT_Animation({url : "res/bum.png",
-	                                               width: playerShip.width*1.5, height : playerShip.height*1.5,
-	                                               endFrameX : 4,
-	                                               endFrameY : 4,
-                                                   animationOnXY : true,
-	                                               fps : 1000/60
-                                                    });
-														
 		//playerExplosion.explos = false;	
-		    for(let i = 0; i < 10; i++){
+	}
+
+	function createPlayerBullets(){
+		 for(let i = 0; i < 10; i++){
 		        playerBullet = new scene.GBT_Image({url : "res/clash2.png",
                                                    width : playerShip.width/5,
 								                   height : playerShip.height/5,
@@ -468,8 +423,48 @@ const game = function(){
 		    }
 
 	}
-
 	
+	function createPlaterExplosion(){
+		playerExplosion = new scene.GBT_Animation({url : "res/bum.png",
+	                                               width: playerShip.width*1.5, height : playerShip.height*1.5,
+	                                               endFrameX : 4,
+	                                               endFrameY : 4,
+                                                   animationOnXY : true,
+	                                               fps : 1000/60
+                                                    });
+	}
+	
+	function createEnemyBullets(){
+		for(let i = 0; i< enemyShips.length; i++){
+		    enemyShoot[i] = new scene.GBT_TimerOut();
+		    enemyBullets[i] = [];
+			
+            	for(let j = 0; j < 10; j++){		
+		            enemyBullet = new scene.GBT_Image({url : "res/bullenemy.png",
+                                                       dx : 0, dy : 0,
+													   width : enemyShips[i].width/5,
+													   height : enemyShips[i].height/5
+							                            });
+		            enemyBullets[i].push(enemyBullet);	
+		        }
+		}
+	}
+	
+	function createEnemyExplosions(){
+		for(let i = 0; i< enemyShips.length; i++){
+		    enemyExplosion = new scene.GBT_Animation({url : "res/bum.png",
+	                                                  width: enemyShips[i].width*1.5, height : enemyShips[i].height*1.5,
+	                                                  endFrameX : 4,
+	                                                  endFrameY : 4,
+                                                      animationOnXY : true,
+	                                                  fps : 1000/60
+                                                       });
+		    enemyExplosion.explos = false; 
+		    enemyExplosions.push(enemyExplosion);
+		}
+	}
+}
+
 const gameOver = function(){
 	
 	this.create = function(){
@@ -492,15 +487,15 @@ const gameOver = function(){
 	    if(start.onclick()){
 	    	scene.setGameLoop(game);
 	    }
-	     publish = new scene.textDraw({text : "Publish on VK",position : "center", y : start.y+start.height*2, size : 40,color : "#45688E"});
+	    publish = new scene.textDraw({text : "Publish on VK",position : "center", y : start.y+start.height*2, size : 40,color : "#45688E"});
 	    if(publish.onclick()){
 	    	VK.api("wall.post", {"message": "https://vk.com/app6300619_57832844 \n Я набрал "+scor+" очков в приложении SpaceShoter, а сколько сможешь ты?",
 				     "attachments" : "photo57832844_456239466"   }, function (data) {
             //alert("Post ID:" + data.response.post_id);
 			             
             });
-	    }
-
+	    
+        }
     }
     
 }
