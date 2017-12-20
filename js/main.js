@@ -386,6 +386,9 @@ const game = function(){
 							                                               (scene.WIDTH/10)/2) + 
 						                                                   (scene.WIDTH/10)/2),
 							                });
+			if(i == 9){
+				enemyShip.y = -scene.HEIGHT-ENEMY_START_POSITION;
+			}
             if(rand == 0){enemyShip.live = 0;
 					      enemyShip.shootSpeed = 800;
 						  enemyShip.dy = Math.round(scene.HEIGHT/120);
