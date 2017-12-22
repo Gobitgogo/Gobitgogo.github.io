@@ -154,25 +154,27 @@ const game = function(){
 		}
 		if(scene.GBT_KeyDown("A")){
 			playerShip.dx = -Math.round(scene.HEIGHT/110);
-			playerShip.dy = 0;
+			//playerShip.dy = 0;
 		}
 		else if(scene.GBT_KeyDown("D")){
 		    playerShip.dx = Math.round(scene.HEIGHT/110);
-		    playerShip.dy = 0;
+		   // playerShip.dy = 0;
 		}
 		else{
+			
 			playerShip.dx = 0;
 		}
 	    if(scene.GBT_KeyDown("W")){
 			playerShip.dy = -Math.round(scene.HEIGHT/110);
-			playerShip.dx = 0;
+			//playerShip.dx = 0;
 		}
 		else if(scene.GBT_KeyDown("S")){
 		    playerShip.dy = Math.round(scene.HEIGHT/110);
-			playerShip.dx = 0;
+			//playerShip.dx = 0;
 		}
 		else{
 			playerShip.dy = 0;
+		
 		}
 		
 	}	
