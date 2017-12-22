@@ -21,10 +21,10 @@ if(c.requestFullScreen)
 
 }			   
 
-				canvas.onclick = function(){
+				/*canvas.onclick = function(){
 				fullScreen(canvas);
 				}
-
+*/
 const ENEMY_START_POSITION = 600;
 let bgs = [];
 let scor;	
