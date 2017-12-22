@@ -133,7 +133,7 @@ this.GBT_Image = function(obj){
 this.GBT_Image.prototype.draw = function(){
 	if(this.load == true){
         ctx.beginPath();
-	    ctx.drawImage(this.buff,this.x,this.y,this.buff.width,this.buff.height);
+	    ctx.drawImage(this.buff,this.x,this.y,this.width,this.height);
 	    ctx.closePath();
 	}
 }
@@ -195,7 +195,7 @@ this.GBT_Animation = function(obj){
     this.animationOnXY = obj.animationOnXY || false;
 	this.animationOnX = obj.animationOnX || false;
 	this.animationOnY = obj.animationOnY || false;
-	this.timer = new Date().getTime();
+
 	this.fps = obj.fps || 1000/60;
 	this.buff = [];
 	for(let i=0; i<=this.efX; i++){
@@ -216,6 +216,7 @@ this.GBT_Animation = function(obj){
 			    }
 			}
 		this.load = true;
+		this.timer = new Date().getTime();
 	});
 	}else{
 		this.sWidth = obj.spriteWidth || this.image.width/this.efX;
@@ -226,6 +227,7 @@ this.GBT_Animation = function(obj){
 			    }
 			}
 		this.load = true;
+		this.timer = new Date().getTime();
 	}
 }
 this.GBT_Animation.prototype.draw = function(){
