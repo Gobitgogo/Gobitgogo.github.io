@@ -80,7 +80,7 @@ const game = function(){
 	    createPlayerBullets(resourse[5]);
 		createPlaterExplosion(resourse[3]);
 	    createBg(resourse[6]);
-		createBonusFastShoot(resourse[7])
+		createBonusFastShoot(resourse[7]);
         scor = 0;
     }			
 		
