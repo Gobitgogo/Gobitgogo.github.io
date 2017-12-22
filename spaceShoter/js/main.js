@@ -1,30 +1,11 @@
 
-//if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
 		 let width = window.innerWidth-20;
          let height = window.innerHeight-20;
-//	}else{
-//     width = 600;
-//     height = 480;	
-//	}
-//if(width>height){width=height;}
 const scene = new GBT_Scene({width : width,
                            height : height,
 					       style : "grey"
 						   });
-function fullScreen(c){
-if(c.requestFullScreen)
-        c.requestFullScreen();
-    else if(c.webkitRequestFullScreen)
-        c.webkitRequestFullScreen();
-    else if(c.mozRequestFullScreen)
-        c.mozRequestFullScreen();
 
-}			   
-
-				/*canvas.onclick = function(){
-				fullScreen(canvas);
-				}
-*/
 const ENEMY_START_POSITION = 600;
 let bgs = [];
 let scor;	
@@ -44,7 +25,7 @@ scene.loadAll(urls).then(images=>{
 	scene.gameLoop(new startGame());
 });	
 
- alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE.");
+// alert("Управление из клавиатуры вверх W, вниз S, влево A, вправо D, стрелять SPACE.");
  /*
  VK.init(function() { 
      // API initialization succeeded 
