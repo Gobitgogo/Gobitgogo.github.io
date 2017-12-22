@@ -1,12 +1,11 @@
-let width;
-let height;
-if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-		  width = window.innerWidth-20;
-          height = window.innerHeight-20;
-	}else{
-     width = 600;
-     height = 480;	
-	}
+
+//if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+		 let width = window.innerWidth-20;
+         let height = window.innerHeight-20;
+//	}else{
+//     width = 600;
+//     height = 480;	
+//	}
 //if(width>height){width=height;}
 const scene = new GBT_Scene({width : width,
                            height : height,
