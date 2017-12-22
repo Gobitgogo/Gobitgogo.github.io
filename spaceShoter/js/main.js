@@ -1,12 +1,31 @@
-//let width = 600;
-//let height = 480;
-let width = window.innerWidth - 20;
-let height = window.innerHeight - 20;
+let width;
+let height;
+if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+		  width = window.innerWidth-20;
+          height = window.innerHeight-20;
+	}else{
+     width = 600;
+     height = 480;	
+	}
 //if(width>height){width=height;}
 const scene = new GBT_Scene({width : width,
                            height : height,
 					       style : "grey"
 						   });
+function fullScreen(c){
+if(c.requestFullScreen)
+        c.requestFullScreen();
+    else if(c.webkitRequestFullScreen)
+        c.webkitRequestFullScreen();
+    else if(c.mozRequestFullScreen)
+        c.mozRequestFullScreen();
+
+}			   
+
+				canvas.onclick = function(){
+				fullScreen(canvas);
+				}
+
 const ENEMY_START_POSITION = 600;
 let bgs = [];
 let scor;	
@@ -79,9 +98,11 @@ const game = function(){
 	    createPlayerShip(resourse[4]);
 	    createPlayerBullets(resourse[5]);
 		createPlaterExplosion(resourse[3]);
-	    createBg(resourse[6]);
+	   // createBg(resourse[6]);
 		createBonusFastShoot(resourse[7]);
         scor = 0;
+		playerShip.x = scene.WIDTH/2 - playerShip.width/2;
+		playerShip.y = scene.HEIGHT - 100;
     }			
 		
 	this.update = function(){
@@ -161,8 +182,7 @@ const game = function(){
 		   // playerShip.dy = 0;
 		}
 		else{
-			
-			playerShip.dx = 0;
+			//playerShip.dx = 0;
 		}
 	    if(scene.GBT_KeyDown("W")){
 			playerShip.dy = -Math.round(scene.HEIGHT/110);
@@ -173,7 +193,7 @@ const game = function(){
 			//playerShip.dx = 0;
 		}
 		else{
-			playerShip.dy = 0;
+			//playerShip.dy = 0;
 		
 		}
 		
@@ -189,8 +209,19 @@ const game = function(){
 	}
   
     function playerShipMove(){
-		playerShip.x += playerShip.dx;
-		playerShip.y += playerShip.dy;
+		//playerShip.x += playerShip.dx;
+		//playerShip.y += playerShip.dy;
+		if(scene.isMobileDevice()){
+		if(scene.getTouchPosition().x !=0 && scene.getTouchPosition().y !=0){
+	       	playerShip.x = /*scene.getMousePosition().x-(playerShip.width/2) || */scene.getTouchPosition().x-(playerShip.width/2);
+	       	playerShip.y = /*scene.getMousePosition().y-playerShip.height ||*/ scene.getTouchPosition().y-playerShip.height;
+		}
+		}else{
+			if(scene.getMousePosition().x !=0 && scene.getMousePosition().y !=0){
+		        playerShip.x = scene.getMousePosition().x-(playerShip.width/2);
+		        playerShip.y = scene.getMousePosition().y-playerShip.height;
+		    }
+		}
 		if(playerShip.x>scene.WIDTH-playerShip.width){
 		    playerShip.x = scene.WIDTH-playerShip.width;
 		}
@@ -203,6 +234,26 @@ const game = function(){
 		if(playerShip.y<0){
 		    playerShip.y = 0;
 		}
+		
+		/*
+		if(playerShip.x+30 <= scene.getTouchPosition().x){
+		    playerShip.dx =8;
+	}
+	else if (playerShip.x+30 > scene.getTouchPosition().x){
+		playerShip.dx=-8;
+	  }
+	if(Math.abs(playerShip.x+30 - scene.getTouchPosition().x)<11){
+		playerShip.dx=0;	 
+	  }
+	if (playerShip.y+30 > scene.getTouchPosition().y){
+		playerShip.dy=-8;
+    }
+	else if(playerShip.y+30 <= scene.getTouchPosition().y){
+		playerShip.dy=8;
+	}
+	if(Math.abs(playerShip.y+30 - scene.getTouchPosition().y)<11){
+		playerShip.dy=0;
+	}*/
 	}
   
     function playerBulletsMove(){
@@ -219,6 +270,10 @@ const game = function(){
 		if(playerBullInd>playerBullets.length-1){
 			playerBullInd = 0;
 		}
+		playerShoot.start(function(){
+            playerBullets[playerBullInd].dy = -Math.round(scene.HEIGHT/90);
+			playerBullInd++;
+            },playerShip.shootSpeed);
 	}
   
     function enemyShipsMove(){
@@ -304,8 +359,7 @@ const game = function(){
 										  x : scene.WIDTH/2 - (scene.WIDTH/10)/2,
 		                                  y : scene.HEIGHT - 100
 						                 });
-		playerShip.x = scene.WIDTH/2 - playerShip.width/2;
-		playerShip.y = scene.HEIGHT - 100;
+
 		playerShip.shootSpeed = 300;
 	}
 
@@ -314,6 +368,7 @@ const game = function(){
 		        playerBullet = new scene.GBT_Image({image : imgPlayerBullets,
                                                    width : playerShip.width/5,
 								                   height : playerShip.height/5,
+												   
 							                       });	
 				playerBullets.push(playerBullet);								   
 		    }
@@ -522,7 +577,7 @@ const game = function(){
 const gameOver = function(){
 	
 	this.create = function(){
-        createBg(resourse[6]);
+        //createBg(resourse[6]);
     }			
 		
 	this.update = function(){
@@ -574,3 +629,86 @@ const startGame = function(){
 		}
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+
+const test = function(){
+	
+	this.create = function(){
+    obj_1 ={
+		x:100,
+		y:100,
+	}
+	    obj_2 ={
+		x:10,
+		y:10,
+	}
+    }			
+		let dX = 0;
+		let dY = 0;
+	this.update = function(){
+		obj_1.x+=dX;  
+		obj_1.y+=dY; 
+        obj_2.x = scene.getMousePosition().x;
+		obj_2.y = scene.getMousePosition().y;
+    if(obj_1.x <= scene.getMousePosition().x){
+		dX =5;
+	}
+	else if (obj_1.x > scene.getMousePosition().x){
+		dX=-5;
+	  }
+	if(Math.abs(obj_1.x - scene.getMousePosition().x)<10){
+		dX=0;	 
+	  }
+	if (obj_1.y > scene.getMousePosition().y){
+		dY=-5;
+    }
+	else if(obj_1.y <= scene.getMousePosition().y){
+		dY=5;
+	}
+	if(Math.abs(obj_1.y - scene.getMousePosition().y)<10){
+		dY=0;
+	}
+	
+
+	 /*  if(scene.collision(obj_2,obj_1)){
+		  dY=0;
+		  dX=0;
+	  }
+		*/
+	/*}
+   
+    this.render = function(){
+	ctx.beginPath();
+    ctx.arc(obj_1.x,obj_1.y,50,Math.PI*2,false);
+	ctx.stroke();
+	ctx.closePath();
+	ctx.beginPath();
+    ctx.arc(obj_2.x,obj_2.y,obj_2.radius,Math.PI*2,false);
+	ctx.stroke();
+	ctx.closePath();
+    }
+
+
+}
+scene.gameLoop(new test());*/

@@ -13,6 +13,7 @@ function GBT_Scene(obj){
 	this.HEIGHT = canvas.height;
 	canvas.style.background = obj.style || "white";
 click = false;
+this.game;
 addEventListener("click", function(){
    click = true;
 });
@@ -32,7 +33,7 @@ this.setGameLoop = function(scene){
 	this.game.create();
 	thisRenderScene = this.game.render;
 	thisUpdateScene = this.game.update;
-	click = false;
+	
 }
 function sceneRequestAnimationFrame(scene){
 requestAnimationFrame(scene)|| webkitRequestAnimationFrame(scene) || oRequestAnimationFrame(scene) || msRequestAnimationFrame(scene) || setTimeout(scene, 1000 / 60);
@@ -41,7 +42,7 @@ function sceneStart(){
 	clearContext();
 	thisRenderScene();
 	thisUpdateScene();
-	//updateRect();
+	click = false;
     sceneRequestAnimationFrame(sceneStart);
 }
 function clearContext(){
@@ -354,16 +355,49 @@ this.textDraw.prototype.onclick = function(){
 	
 }
 this.textDraw.prototype.checkStart = function(e){
-    p = getMousePosition(e);
-}
-getMousePosition = function(e) {
+	this.getMousePosition = function(e) {
     let r = canvas.getBoundingClientRect();
     return {
         x: e.clientX - r.left || 0,
         y: e.clientY - r.top || 0
     };
 }
-
+    p = this.getMousePosition(e);
+}
+	let emX =0 ;
+	let emY = 0;
+this.getMousePosition = function(){
+   canvas.onmousemove = function(e){
+		let r = canvas.getBoundingClientRect();
+        emX = e.clientX - r.left || 0;
+	 	emY = e.clientY - r.top || 0;
+	}
+	return {
+	   x : emX,
+       y : emY
+       }
+}
+canvas.addEventListener('touchmove', function(event){
+	setTouchPosition(event);
+});
+let etX =0 ;
+let etY = 0;
+setTouchPosition = function(e){
+	    e.preventDefault();
+	    e = e.changedTouches[0];
+        etX = e.clientX || e.pageX;
+	 	etY = e.clientY|| e.pageY;
+}
+this.getTouchPosition = function(){
+	return {
+	   x : etX,
+       y : etY
+       }
+}
+this.collisionArc = function(obj_1,obj_2){
+    return Math.abs((scene.getMousePosition().x - obj_2.x)*(scene.getMousePosition().x - obj_2.x) + (scene.getMousePosition().y - obj_2.y)*(scene.getMousePosition().y - obj_2.y))<(obj_1.radius+obj_2.radius)*(obj_1.radius+obj_2.radius);
+} 
+this.isMobileDevice=function(){return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)}
 }
 
 
