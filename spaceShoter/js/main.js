@@ -1,5 +1,5 @@
-let width = window.innerWidth-20;
-let height = window.innerWidth-20;
+let width = 600;
+let height = 480;
 
 const scene = new GBT_Scene({width : width,
                            height : height,
