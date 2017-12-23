@@ -1,5 +1,5 @@
-let width = 600;
-let height = 480;
+let width = 650;
+let height = 530;
 
 const scene = new GBT_Scene({width : width,
                            height : height,
