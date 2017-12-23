@@ -42,10 +42,10 @@ function sceneRequestAnimationFrame(scene){
 requestAnimationFrame(scene)|| webkitRequestAnimationFrame(scene) || oRequestAnimationFrame(scene) || msRequestAnimationFrame(scene) || setTimeout(scene, 1000 / 60);
 }
 function sceneStart(){
+	click = false;
 	clearContext();
 	thisRenderScene();
 	thisUpdateScene();
-	click = false;
     sceneRequestAnimationFrame(sceneStart);
 }
 function clearContext(){
@@ -127,12 +127,6 @@ this.GBT_Image = function(obj){
 					this.load = true;
 				}
 			}
-	/*    this.rect = {
-		x : this.x,
-		y : this.y,
-		width : this.width,
-		height : this.height
-	}*/
 }
 this.GBT_Image.prototype.draw = function(){
 	if(this.load == true){
@@ -352,7 +346,9 @@ this.textDraw.prototype.onclick = function(){
         if(p.x >= this.rect.x && p.x <= this.rect.x + this.rect.w &&
         p.y >= this.rect.y && p.y <= this.rect.y + this.rect.h){
 			p = null;
+			if(p==null){
 			return true;
+			}
 		}
 	}
 	
