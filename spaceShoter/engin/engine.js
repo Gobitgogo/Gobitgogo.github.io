@@ -33,7 +33,10 @@ this.setGameLoop = function(scene){
 	this.game.create();
 	thisRenderScene = this.game.render;
 	thisUpdateScene = this.game.update;
-	
+	emX = 0;
+	emY = 0;
+	etX = 0;
+	etY = 0;
 }
 function sceneRequestAnimationFrame(scene){
 requestAnimationFrame(scene)|| webkitRequestAnimationFrame(scene) || oRequestAnimationFrame(scene) || msRequestAnimationFrame(scene) || setTimeout(scene, 1000 / 60);
@@ -175,7 +178,7 @@ this.GBT_TimerOut.prototype.start = function(f,t){
 	    this.timer = new Date().getTime();
 	}
 }
-this.collision = function(obj_1, obj_2){
+this.collisionRect = function(obj_1, obj_2){
 return obj_1.x<=obj_2.x+obj_2.width && obj_1.x+obj_1.width>=obj_2.x 
     && obj_1.y<=obj_2.y+obj_2.height && obj_1.y+obj_1.height>=obj_2.y;
 }
@@ -394,8 +397,8 @@ this.getTouchPosition = function(){
        y : etY
        }
 }
-this.collisionArc = function(obj_1,obj_2){
-    return Math.abs((scene.getMousePosition().x - obj_2.x)*(scene.getMousePosition().x - obj_2.x) + (scene.getMousePosition().y - obj_2.y)*(scene.getMousePosition().y - obj_2.y))<(obj_1.radius+obj_2.radius)*(obj_1.radius+obj_2.radius);
+this.collisionCircle = function(obj_1,obj_2){
+    return Math.abs((obj_1.x - obj_2.x)*(obj_1.x - obj_2.x) + (obj_1.y - obj_2.y)*(obj_1.y - obj_2.y)<(obj_1.radius+obj_2.radius)*(obj_1.radius+obj_2.radius));
 } 
 this.isMobileDevice=function(){return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)}
 }
