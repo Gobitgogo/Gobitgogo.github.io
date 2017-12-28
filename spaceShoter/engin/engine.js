@@ -25,7 +25,6 @@ this.onclick = function(){
 	}
 }
 this.checkSceneClick = function(){
-	alert()
     click = true; 
 }
 this.gameLoop = function(scene){
