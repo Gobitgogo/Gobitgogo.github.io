@@ -11,7 +11,7 @@ function GBT_Scene(obj){
 	canvas.height = obj.height || 400;
 	this.WIDTH = canvas.width;
 	this.HEIGHT = canvas.height;
-	this.id = obj.id || "canvas";
+	canvas.id = obj.id || "canvas";
 	canvas.style.background = obj.style || "white";
 click = false;
 this.game;
