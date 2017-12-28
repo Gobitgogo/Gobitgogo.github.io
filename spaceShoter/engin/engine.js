@@ -20,7 +20,6 @@ function checkSceneClick(){
 }
 this.onclick = function(){
     canvas.onclick = checkSceneClick;
-	console.log(click)
 	return click;
 }
 this.gameLoop = function(scene){
