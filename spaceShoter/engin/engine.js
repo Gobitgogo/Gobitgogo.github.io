@@ -16,11 +16,14 @@ function GBT_Scene(obj){
 click = false;
 this.game;
 function checkSceneClick(){
-    click = true;
+    click = true; 
 }
 this.onclick = function(){
-    canvas.onclick = checkSceneClick;
-	return click;
+    canvas.addEventListener("click",checkSceneClick);
+	if(click){
+		click = false;
+	return true;
+	}
 }
 this.gameLoop = function(scene){
 	this.game = scene;
