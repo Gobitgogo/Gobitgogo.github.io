@@ -208,7 +208,7 @@ const game = function(){
 		if(scene.isMobileDevice()){
 		if(scene.getTouchPosition().x !=0 && scene.getTouchPosition().y !=0){
 	       	playerShip.x = scene.getTouchPosition().x-(playerShip.width/2);
-	       	playerShip.y = scene.getTouchPosition().y-playerShip.height;
+	       	playerShip.y = scene.getTouchPosition().y-playerShip.height*2;
 		}
 		}else{
 			if(scene.getMousePosition().x !=0 && scene.getMousePosition().y !=0){
@@ -453,7 +453,7 @@ const game = function(){
 				image : liveImg,
 				width : playerShip.width/2,
 				height : playerShip.height / 2,
-				x : scene.WIDTH-(32*(i+1)),
+				x : scene.WIDTH-(playerShip.width/2*(i+1)),
 				y : 0
 			});
 		lives.push(live);
