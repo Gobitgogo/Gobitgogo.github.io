@@ -11,15 +11,17 @@ function GBT_Scene(obj){
 	canvas.height = obj.height || 400;
 	this.WIDTH = canvas.width;
 	this.HEIGHT = canvas.height;
+	this.id = obj.id || "canvas";
 	canvas.style.background = obj.style || "white";
 click = false;
 this.game;
-canvas.addEventListener("click", function(){
-   click = true;
-});
+function checkSceneClick(){
+    click = true;
+}
 this.onclick = function(){
-	this.click = true
-	return this.click == click;
+    canvas.onclick = checkSceneClick;
+	console.log(click)
+	return click;
 }
 this.gameLoop = function(scene){
 	this.game = scene;
@@ -42,7 +44,6 @@ function sceneRequestAnimationFrame(scene){
 requestAnimationFrame(scene)|| webkitRequestAnimationFrame(scene) || oRequestAnimationFrame(scene) || msRequestAnimationFrame(scene) || setTimeout(scene, 1000 / 60);
 }
 function sceneStart(){
-	click = false;
 	clearContext();
 	thisRenderScene();
 	thisUpdateScene();
@@ -338,8 +339,7 @@ this.textDraw = function(obj){
 	
 }
 this.textDraw.prototype.onclick = function(){
-
-    canvas.onclick = this.checkStart;
+      canvas.onclick = this.checkStart;
 		//canvas.removeEventListener('click', this.checkStart, false);
     if(p!=null){
         if(p.x >= this.rect.x && p.x <= this.rect.x + this.rect.w &&
