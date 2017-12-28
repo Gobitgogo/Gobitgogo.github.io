@@ -15,15 +15,18 @@ function GBT_Scene(obj){
 	canvas.style.background = obj.style || "white";
 click = false;
 this.game;
-function checkSceneClick(){
-    click = true; 
-}
+
 this.onclick = function(){
-    canvas.addEventListener("click",checkSceneClick);
+    canvas.addEventListener("click",this.checkSceneClick);
 	if(click){
-		click = false;
+		canvas.removeEventListener("click",this.checkSceneClick);
+	click = false;
 	return true;
 	}
+}
+this.checkSceneClick = function(){
+	alert()
+    click = true; 
 }
 this.gameLoop = function(scene){
 	this.game = scene;
