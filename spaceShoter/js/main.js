@@ -1,5 +1,5 @@
-let width = 650;
-let height = 530;
+let width = 600;
+let height = 480;
 
 const scene = new GBT_Scene({width : width,
                            height : height,
@@ -11,14 +11,16 @@ let scor;
 let urls = [];
 
 let resourse;
-    urls[0] = scene.loadResourse("res/enemy.png");
-	urls[1] = scene.loadResourse("res/enemyShip_2.png");
+    urls[0] = scene.loadResourse("res/enemyS.png");
+	urls[1] = scene.loadResourse("res/enemyS2.png");
 	urls[2] = scene.loadResourse("res/bullenemy.png");
 	urls[3] = scene.loadResourse("res/bum.png");
-	urls[4] = scene.loadResourse("res/ship.png");
+	urls[4] = scene.loadResourse("res/enemy.png");
 	urls[5] = scene.loadResourse("res/clash2.png");
 	urls[6] = scene.loadResourse("res/bg.jpg");
 	urls[7] = scene.loadResourse("res/bonusFast.png");
+	urls[8] = scene.loadResourse("res/protection.png");
+	urls[9] = scene.loadResourse("res/live.png");
 scene.loadAll(urls).then(images=>{
 	resourse = images;
 	scene.gameLoop(new startGame());
@@ -34,7 +36,7 @@ scene.loadAll(urls).then(images=>{
      // Can reload page here 
 }, '5.69'); 
 */
-function createBg(bgImage){
+createBg=(bgImage)=>{
 	for(let i = 0; i < 2; i++){
 	    bg = new scene.GBT_Image({image : bgImage,
                                   x : 0, y : i*-scene.HEIGHT,
@@ -45,7 +47,7 @@ function createBg(bgImage){
         }
 }
 
-function bgsMove(){
+bgsMove=()=>{
 	for(let i = 0; i <bgs.length;i++){
 		bgs[i].y+=bgs[i].dy;
 			if(bgs[i].y>=scene.HEIGHT) {
@@ -55,7 +57,7 @@ function bgsMove(){
 }
 
 const game = function(){
-   const ENEMY_START_POSITION = 600;
+   const ENEMY_START_POSITION = 350;
    let playerShip;
    let enemyShips = [];
    let playerBullets = [];
@@ -63,13 +65,18 @@ const game = function(){
    let enemyExplosions = [];
    let playerBullInd = 0;
    let enemyBullInd = 0;
+   scor = 0;
+   let timerInvulnerability;
    let playerShoot = new scene.GBT_TimerOut();
    let enemyShipsTimerMove  = new scene.GBT_TimerOut();
    let bonusFastShootAdd = new scene.GBT_TimerOut();
+   let bonusProtectionAdd = new scene.GBT_TimerOut();
+   let invulnerability = new scene.GBT_TimerOut();
    let enemyShoot = [];
    let imgEnemyShips = [];
-
-	this.create = function(){
+   let lives = [];
+   let timer = 0;
+	this.create=()=>{
 	    imgEnemyShips.push(resourse[0]);
 	    imgEnemyShips.push(resourse[1]);
         createEnemyShips(imgEnemyShips);
@@ -78,25 +85,28 @@ const game = function(){
 	    createPlayerShip(resourse[4]);
 	    createPlayerBullets(resourse[5]);
 		createPlaterExplosion(resourse[3]);
+		createLiveImg(resourse[9]);
 		createBonusFastShoot(resourse[7]);
-        scor = 0;
+		createBonusProtection(resourse[8]);
     }			
 		
-	this.update = function(){
+	this.update=()=>{
 		bgsMove();
 		playerShipMove();
 	 	playerBulletsMove();
         enemyShipsMove();
 		enemyBulletsMove();
 		bonusFastShootMove();
+		bonusProtectionMove();
 		collision();
 		deleteEnemy();
+		invulnerabilityPlayer();
 		//handleInput();
 		//illuminationObject();
 		//scene.fpsDraw(0,48,48,"red");
 	}
 		
-    this.render = function(){
+    this.render=()=>{
 		for(let i = 0; i <bgs.length;i++){
 		    bgs[i].draw();
 		}
@@ -123,14 +133,20 @@ const game = function(){
 				}
 			}
 			else{
+				if(timer%2==0){
 				playerShip.draw();
+				}
+				//lives = scene.textDraw({text : "Lives: " + playerShip.live ,x:scene.HEIGHT, size : 25,color : "white"});
+						for(let i = 0; i<lives.length; i++){
+			lives[i].draw();
+		}
 			}
 
-	    for(let i = 0; i < enemyExplosions.length; i++){	
+	    for(let i = 0; i < enemyShips.length; i++){	
 		    if(enemyExplosions[i].explos == true){
 			    enemyExplosions[i].draw();
-			    if(enemyExplosions[i].getCurrentFrameX()+1 == enemyExplosions[i].getEndFrameX() &&
-    		        enemyExplosions[i].getCurrentFrameY()+1 == enemyExplosions[i].getEndFrameY()){
+			    if(enemyExplosions[i].getCurrentFrameX()+1 >= enemyExplosions[i].getEndFrameX() &&
+    		        enemyExplosions[i].getCurrentFrameY()+1 >= enemyExplosions[i].getEndFrameY()){
 			        enemyExplosions[i].explos = false;
 				}
 			}
@@ -139,11 +155,12 @@ const game = function(){
             enemyShips[i].draw();			 
 		}
 		scores = scene.textDraw({text : "Scores: " + scor, size : 25,color : "white"});
-		
+
 		bonusFastShoot.draw();
+		bonusProtection.draw();
 	}
 	
-	function handleInput(){
+	handleInput=()=>{
 		if(scene.GBT_KeyDown("SPACE")){
             playerShoot.start(function(){
             playerBullets[playerBullInd].dy = -Math.round(scene.HEIGHT/90);
@@ -176,7 +193,7 @@ const game = function(){
 		
 	}	
    
-    function bgsMove(){
+    bgsMove=()=>{
 		for(let i = 0; i <bgs.length;i++){
 			bgs[i].y+=bgs[i].dy;
 			if(bgs[i].y>=scene.HEIGHT) {
@@ -185,7 +202,7 @@ const game = function(){
 		}
 	}
   
-    function playerShipMove(){
+    playerShipMove=()=>{
 		//playerShip.x += playerShip.dx;
 		//playerShip.y += playerShip.dy;
 		if(scene.isMobileDevice()){
@@ -233,7 +250,7 @@ const game = function(){
 	}*/
 	}
   
-    function playerBulletsMove(){
+    playerBulletsMove=()=>{
 		playerBullets.forEach(bull=>{
 		    bull.y += bull.dy;
 			if(bull.dy == 0){
@@ -253,7 +270,7 @@ const game = function(){
             },playerShip.shootSpeed);
 	}
   
-    function enemyShipsMove(){
+    enemyShipsMove=()=>{
 		for(let i = 0; i < enemyShips.length; i++){	
 		    if(enemyShips[i].load == true){
 		        enemyShips[i].x += enemyShips[i].dx;
@@ -273,13 +290,13 @@ const game = function(){
 		}
 		enemyShipsTimerMove.start(function(){
 			for(let i = 0; i < enemyShips.length; i++){	
-			    let rand = Math.floor(Math.random() * (Math.round(scene.HEIGHT/320)-(-Math.round(scene.HEIGHT/320)))+(-Math.round(scene.HEIGHT/320)));
+			    let rand = Math.floor(Math.random() * (3-(-2))+(-2));
 			    enemyShips[i].dx = rand;
 			}
-		},2000);
+		},2500);
 	}
   
-    function enemyBulletsMove(){
+    enemyBulletsMove=()=>{
 		for(let i = 0; i < enemyShips.length; i++){	
 		   for(let j = 0; j < enemyBullets[i].length; j++){
 				enemyBullets[i][j].y += enemyBullets[i][j].dy;
@@ -309,7 +326,7 @@ const game = function(){
 		}
 	}
    
-    function bonusFastShootMove(){
+    bonusFastShootMove=()=>{
 		bonusFastShootAdd.start(function(){
 			bonusFastShoot.dy =  Math.round(scene.HEIGHT/180);
 		},bonusFastShoot.time);
@@ -322,7 +339,21 @@ const game = function(){
 		}
 	}
    
-    function createPlayerShip(imgPlayerShip){
+    bonusProtectionMove=()=>{
+		bonusProtectionAdd.start(function(){
+			bonusProtection.dy =  Math.round(scene.HEIGHT/180);
+			bonusProtection.status = false;
+		},bonusProtection.time);
+		bonusProtection.y += bonusProtection.dy;
+		if(bonusProtection.y>scene.HEIGHT){
+			bonusProtection.x = Math.floor(Math.random() * ((scene.WIDTH-(playerShip.width/2))-(playerShip.width/2))+(playerShip.width/2));
+			bonusProtection.y = -scene.HEIGHT;
+			bonusProtection.dy = 0;
+			bonusProtection.time = Math.floor(Math.random() * (60000-50000)+50000);
+		}
+	}
+   
+    createPlayerShip=(imgPlayerShip)=>{
 		playerShip = new scene.GBT_Image({image : imgPlayerShip,
                                           width : scene.WIDTH/10, 
 										  height : scene.HEIGHT/10,
@@ -332,9 +363,11 @@ const game = function(){
 						                 });
 
 		playerShip.shootSpeed = 300;
+		playerShip.live = 2;
+		playerShip.invulnerability = false;
 	}
 
-	function createPlayerBullets(imgPlayerBullets){
+	createPlayerBullets=(imgPlayerBullets)=>{
 		 for(let i = 0; i < 10; i++){
 		        playerBullet = new scene.GBT_Image({image : imgPlayerBullets,
                                                    width : playerShip.width/5,
@@ -346,7 +379,7 @@ const game = function(){
 
 	}
 	
-	function createPlaterExplosion(imgExplosions){
+	createPlaterExplosion=(imgExplosions)=>{
 		playerExplosion = new scene.GBT_Animation({image : imgExplosions,
 	                                               width: playerShip.width*1.5, height : playerShip.height*1.5,
 	                                               endFrameX : 4,
@@ -356,16 +389,16 @@ const game = function(){
                                                     });
 	}
 	
-	function createEnemyShips(imgEnemyShip){
+	createEnemyShips=(imgEnemyShip)=>{
 		for(let i = enemyShips.length; i < 10; i++){
             let rand = Math.floor(Math.random() * 2);			
 		    enemyShip = new scene.GBT_Image({image : imgEnemyShip[rand],
                                             width : scene.WIDTH/10,
 											height : scene.HEIGHT/10,
-							                y : i*-scene.HEIGHT-ENEMY_START_POSITION,
-							                x : Math.floor(Math.random() * ((scene.WIDTH-(scene.WIDTH/10)) - (scene.WIDTH/10)/2) +  (scene.WIDTH/10)/2),
+							                y : (i*-ENEMY_START_POSITION),
+							                x : Math.floor(Math.random() * (scene.WIDTH-(scene.WIDTH/10))),
 							                });
-			if(i == 9){
+			if(i == 0){
 				enemyShip.y = -scene.HEIGHT-ENEMY_START_POSITION;
 			}
             if(rand == 0){enemyShip.live = 0;
@@ -384,7 +417,7 @@ const game = function(){
 		}
 	}
 	
-	function createEnemyBullets(imgEnemyBullet){
+	createEnemyBullets=(imgEnemyBullet)=>{
 		for(let i = 0; i< enemyShips.length; i++){
 		    enemyShoot[i] = new scene.GBT_TimerOut();
 		    enemyBullets[i] = [];
@@ -400,7 +433,7 @@ const game = function(){
 		}
 	}
 	
-	function createEnemyExplosions(imgEnemyExplosions){
+	createEnemyExplosions=(imgEnemyExplosions)=>{
 		for(let i = 0; i< enemyShips.length; i++){
 		    enemyExplosion = new scene.GBT_Animation({image : imgEnemyExplosions,
 	                                                  width: enemyShips[i].width*1.5, height : enemyShips[i].height*1.5,
@@ -414,7 +447,20 @@ const game = function(){
 		}
 	}
 
-	function createBonusFastShoot(imgBFS){
+	createLiveImg=(liveImg)=>{
+		for(let i = 0; i<playerShip.live+1; i++){
+			live = new scene.GBT_Image({
+				image : liveImg,
+				width : playerShip.width/2,
+				height : playerShip.height / 2,
+				x : scene.WIDTH-(32*(i+1)),
+				y : 0
+			});
+		lives.push(live);
+		}
+	}
+	
+	createBonusFastShoot=(imgBFS)=>{
 		bonusFastShoot = new scene.GBT_Image({
 			image : imgBFS,
 			x : Math.floor(Math.random() * ((scene.WIDTH-(playerShip.width/2))-(playerShip.width/2))+(playerShip.width/2)),
@@ -426,7 +472,20 @@ const game = function(){
 		
 	}
 
-	function collision(){
+	createBonusProtection=(imgBP)=>{
+		bonusProtection = new scene.GBT_Image({
+			image : imgBP,
+			x : Math.floor(Math.random() * ((scene.WIDTH-(playerShip.width/2))-(playerShip.width/2))+(playerShip.width/2)),
+			y : -scene.HEIGHT*2,
+			width : playerShip.width/2,
+			height : playerShip.height/2
+		});
+		bonusProtection.time = Math.floor(Math.random() * (40000-20000)+20000);
+		bonusProtection.status = false;
+		
+	}
+	
+	collision=()=>{
         playerBullets.forEach(bull=>{
 			for(let i = 0; i < enemyShips.length; i++){	
 				if(enemyShips[i].y>0 && bull.dy!=0){
@@ -444,6 +503,7 @@ const game = function(){
 						    enemyShips[i].die = true;
 						}else{
 						    enemyShips[i].live--;
+
 						}
                         bull.dy = 0;
                         bull.x = playerShip.x + playerShip.width/2 - bull.width/2, bull.y = playerShip.y;
@@ -455,7 +515,16 @@ const game = function(){
 		    for(let j = 0; j < enemyBullets[i].length; j++){
 				if(enemyBullets[i][j].dy!=0){
                     if(scene.collisionRect(enemyBullets[i][j],playerShip)){
-					    playerExplosion.explos = true;
+						if(playerShip.live == 0 && playerShip.invulnerability==false){
+					    playerExplosion.explos = true;}
+						else{
+						if(playerShip.invulnerability==false){
+								playerShip.invulnerability=true;
+						        playerShip.live--;
+		                        lives.splice(0,1);
+						}							
+						}
+						
 					    playerExplosion.x = playerShip.x;
 				        playerExplosion.y = playerShip.y;
                         enemyBullets[i][j].dy = 0;
@@ -480,7 +549,16 @@ const game = function(){
 		for(let i = 0; i < enemyShips.length; i++){	
             if(enemyShips[i].y>0){
 				if(scene.collisionRect(playerShip,enemyShips[i])){
-					playerExplosion.explos = true;
+					if(playerShip.live == 0 && playerShip.invulnerability==false ){
+					    playerExplosion.explos = true;}
+					else{
+						if(playerShip.invulnerability==false){
+								playerShip.invulnerability=true;
+						        playerShip.live--;
+								lives.splice(0,1);
+						}
+						
+						}
 					enemyExplosions[i].explos = true;
 					playerExplosion.x = playerShip.x;
 				    playerExplosion.y = playerShip.y;
@@ -501,10 +579,40 @@ const game = function(){
 			bonusFastShoot.dy = 0;
 			bonusFastShoot.time = Math.floor(Math.random() * (40000-20000)+20000);
 		}
+		if(scene.collisionRect(playerShip,bonusProtection)){
+			playerShip.invulnerability = true;
+			bonusProtection.status = true;
+			bonusProtection.x = Math.floor(Math.random() * ((scene.WIDTH-(playerShip.width/2))-(playerShip.width/2))+(playerShip.width/2));
+			bonusProtection.y = -scene.HEIGHT;
+			bonusProtection.dy = 0;
+			bonusProtection.time = Math.floor(Math.random() * (60000-50000)+50000);
+		}
     } 
 	
-	function illuminationObject(){
+	invulnerabilityPlayer=()=>{
+		if(playerShip.invulnerability == true){
+            invulnerability.start(function(){
+							timer +=1;
+							if(bonusProtection.status){
+								if(timer >= 60){
+								playerShip.invulnerability = false;
+								bonusProtection.status = false;
+								timer = 0;
+								}
+							}else{
+								if(timer >= 30){
+								playerShip.invulnerability = false;
+								timer = 0;
+								}
+							}
+							},187);
+}
+	}
+	
+	illuminationObject=()=>{
+		if(playerShip.invulnerability == true){
 		playerShip.illuminationObject();
+		}
 		enemyShips.forEach(enemy=>{
 		    enemy.illuminationObject();
 		});
@@ -518,7 +626,7 @@ const game = function(){
 		}
 	}
 
-	function deleteEnemy(){
+	deleteEnemy=()=>{
 		for(let i = 0; i<enemyShips.length; i ++){
 			if(enemyShips[i].die == true){
 		        enemyShips.splice(i,1);
@@ -528,7 +636,7 @@ const game = function(){
 		}
 	}
 
-	function restart(){
+	restart=()=>{
     enemyShips = [];
 	playerBullets = [];
 	playerShip = null;
@@ -546,15 +654,15 @@ const game = function(){
 
 const gameOver = function(){
 	
-	this.create = function(){
+	this.create=()=>{
 
     }			
 		
-	this.update = function(){
+	this.update=()=>{
         bgsMove();
 	}
     
-    this.render = function(){
+    this.render=()=>{
 		for(let i = 0; i <bgs.length;i++){
 		    bgs[i].draw();
 		}
@@ -578,15 +686,15 @@ const gameOver = function(){
 
 const startGame = function(){
 	
-	this.create = function(){
+	this.create=()=>{
         createBg(resourse[6]);
     }			
 		
-	this.update = function(){
+	this.update=()=>{
 		bgsMove();
 	}
     
-    this.render = function(){
+    this.render=()=>{
 		for(let i = 0; i <bgs.length;i++){
 		    bgs[i].draw();
 		}

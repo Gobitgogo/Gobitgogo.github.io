@@ -14,7 +14,7 @@ function GBT_Scene(obj){
 	canvas.style.background = obj.style || "white";
 click = false;
 this.game;
-addEventListener("click", function(){
+canvas.addEventListener("click", function(){
    click = true;
 });
 this.onclick = function(){
@@ -315,7 +315,6 @@ this.textDraw = function(obj){
 	this.t = ctx.measureText(this.text);
 	this.width = this.t.width;
 	this.height = obj.size;
-	this.cx = 0;
 	if(this.position != 0){
 		ctx.textAlign = "center";
 		this.x = obj.x || canvas.width/2;//obj.size;
@@ -340,7 +339,7 @@ this.textDraw = function(obj){
 }
 this.textDraw.prototype.onclick = function(){
 
-    canvas.addEventListener('click', this.checkStart, false);
+    canvas.onclick = this.checkStart;
 		//canvas.removeEventListener('click', this.checkStart, false);
     if(p!=null){
         if(p.x >= this.rect.x && p.x <= this.rect.x + this.rect.w &&
