@@ -57,7 +57,7 @@ bgsMove=()=>{
 }
 
 const game = function(){
-   const ENEMY_START_POSITION = 350;
+   const ENEMY_START_POSITION = 200;
    let playerShip;
    let enemyShips = [];
    let playerBullets = [];
@@ -124,23 +124,7 @@ const game = function(){
 				}
 		    }
 		}
-		if(playerExplosion.explos == true){
-            playerExplosion.draw();
-			if(playerExplosion.getCurrentFrameX()+1 == playerExplosion.getEndFrameX()&&
-    			playerExplosion.getCurrentFrameY()+1 == playerExplosion.getEndFrameY()){
-			    playerExplosion.explos = false;
-				restart();
-				}
-			}
-			else{
-				if(timer%2==0){
-				playerShip.draw();
-				}
-				//lives = scene.textDraw({text : "Lives: " + playerShip.live ,x:scene.HEIGHT, size : 25,color : "white"});
-						for(let i = 0; i<lives.length; i++){
-			lives[i].draw();
-		}
-			}
+		
 
 	    for(let i = 0; i < enemyShips.length; i++){	
 		    if(enemyExplosions[i].explos == true){
@@ -158,6 +142,24 @@ const game = function(){
 
 		bonusFastShoot.draw();
 		bonusProtection.draw();
+		
+		if(playerExplosion.explos == true){
+            playerExplosion.draw();
+			if(playerExplosion.getCurrentFrameX()+1 == playerExplosion.getEndFrameX()&&
+    			playerExplosion.getCurrentFrameY()+1 == playerExplosion.getEndFrameY()){
+			    playerExplosion.explos = false;
+				restart();
+				}
+			}
+			else{
+				if(timer%2==0){
+				    playerShip.draw();
+				}
+				//lives = scene.textDraw({text : "Lives: " + playerShip.live ,x:scene.HEIGHT, size : 25,color : "white"});
+				for(let i = 0; i<lives.length; i++){
+		            lives[i].draw();
+		           }
+			}
 	}
 	
 	handleInput=()=>{
@@ -453,7 +455,7 @@ const game = function(){
 				image : liveImg,
 				width : playerShip.width/2,
 				height : playerShip.height / 2,
-				x : scene.WIDTH-(playerShip.width/2*(i+1)),
+				x : scene.WIDTH-(playerShip.width/1.5*(i+1)),
 				y : 0
 			});
 		lives.push(live);
@@ -668,7 +670,7 @@ const gameOver = function(){
 		}
         scores = new scene.textDraw({text : "You scores: " + scor,position : "center",y : scene.HEIGHT/3, size : 50,color : "white"});
 	    start = new scene.textDraw({text : "Click to start",position : "center", size : 40,color : "white"});
-	    if(start.onclick()){
+	    if(scene.onclick()){
 	    	scene.setGameLoop(new game());
 	    }
 	   publish = new scene.textDraw({text : "Publish on VK",position : "center", y : start.y+start.height*2, size : 40,color : "#45688E"});
@@ -699,7 +701,7 @@ const startGame = function(){
 		    bgs[i].draw();
 		}
 	    start = new scene.textDraw({text : "Click to start", position : "center", size : 50,color : "white"});
-		if(start.onclick()){
+		if(scene.onclick()){
 		    scene.setGameLoop(new game());
 		}
     }
