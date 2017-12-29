@@ -524,7 +524,7 @@ const game = function(){
 								playerShip.invulnerability=true;
 						        playerShip.live--;
 								playerShip.shootSpeed = 300;
-		                        lives.splice(0,1);
+		                        lives.splice(lives.length-1,1);
 						}							
 						}
 						
@@ -559,7 +559,7 @@ const game = function(){
 								playerShip.invulnerability=true;
 						        playerShip.live--;
 								playerShip.shootSpeed = 300;
-								lives.splice(0,1);
+								lives.splice(lives.length-1,1);
 						}
 						
 						}
