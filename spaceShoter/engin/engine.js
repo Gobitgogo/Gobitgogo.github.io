@@ -1,12 +1,9 @@
-let thisUpdateScene;
-let thisRenderScene;
-loadAllImage = 0;
-loadCountImage = 0;
-//let game;
-const canvas = document.createElement("canvas");
-document.body.appendChild(canvas);
-const ctx = canvas.getContext("2d");
 function GBT_Scene(obj){
+	let thisUpdateScene;
+    let thisRenderScene;
+	const canvas = document.createElement("canvas");
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext("2d");
 	canvas.width = obj.width || 400;
 	canvas.height = obj.height || 400;
 	this.WIDTH = canvas.width;
@@ -146,41 +143,6 @@ this.GBT_Image.prototype.illuminationObject = function(){
     ctx.strokeRect(this.x,this.y,this.width,this.height);
 	ctx.closePath();
 }
-
-const keys = {"LEFT":37,"RIGHT":39,"UP":38,"DOWN":40,"SPACE":32,"Q":81,"W":87,"E":69,"R":82,"T":84,"Y":89,"U":85,"I":73,"O":79,"P":80,"A":65,"S":83,"D":68,"F":70,"G":71,"H":72,"J":74,"K":75,"L":76,"Z":90,"X":88,"V":86,"B":66,"N":78,"M":77}
-let keyDown = {};
-this.GBT_KeyDown = function(keyName){
-    return  keyDown[keys[keyName]] == true;
-}
-addEventListener("keydown", function(event){
-    setKey(event.keyCode);
-});
-addEventListener("keyup", function(event){
-    clearKey(event.keyCode);
-});
-function setKey(e){
-	keyDown[e] = true;
-}
-function clearKey(e){
-	keyDown[e] = false;
-}
-this.GBT_TimerOut = function(){
-    this.startTimer = false;
-    this.started;
-    this.timer = new Date().getTime();
-}
-this.GBT_TimerOut.prototype.start = function(f,t){
-    this.t = t;
-    this.f = f;
-	if(new Date().getTime() - this.timer > this.t){
-        this.f();
-	    this.timer = new Date().getTime();
-	}
-}
-this.collisionRect = function(obj_1, obj_2){
-return obj_1.x<=obj_2.x+obj_2.width && obj_1.x+obj_1.width>=obj_2.x 
-    && obj_1.y<=obj_2.y+obj_2.height && obj_1.y+obj_1.height>=obj_2.y;
-}
 this.GBT_Animation = function(obj){
 	this.url = obj.url || 0;
 	this.image = obj.image || 0;
@@ -307,6 +269,23 @@ this.GBT_Animation.prototype.illuminationObject = function(){
     ctx.strokeRect(this.x,this.y,this.width,this.height);
 	ctx.closePath();
 }
+this.collisionRect = function(obj_1, obj_2){
+return obj_1.x<=obj_2.x+obj_2.width && obj_1.x+obj_1.width>=obj_2.x 
+    && obj_1.y<=obj_2.y+obj_2.height && obj_1.y+obj_1.height>=obj_2.y;
+}
+this.GBT_TimerOut = function(){
+    this.startTimer = false;
+    this.started;
+    this.timer = new Date().getTime();
+}
+this.GBT_TimerOut.prototype.start = function(f,t){
+    this.t = t;
+    this.f = f;
+	if(new Date().getTime() - this.timer > this.t){
+        this.f();
+	    this.timer = new Date().getTime();
+	}
+}
 let p;
 this.textDraw = function(obj){
     this.color =  obj.color || "green";
@@ -366,6 +345,20 @@ this.textDraw.prototype.checkStart = function(e){
 }
     p = this.getMousePosition(e);
 }
+this.GBT_Rect = function(obj){
+	this.width = obj.width || 50;
+	this.height = obj.height || 50;
+	this.x = obj.x || 0;
+	this.y = obj.y || 0;
+	ctx.fillStyle = obj.style || null;
+	ctx.fillStroke = obj.stroke || null;
+}
+this.GBT_Rect.prototype.draw = function(){
+	ctx.beginPath();
+	ctx.fillRect(this.x,this.y,this.width,this.height);
+	ctx.closePath();
+}
+
 	let emX =0 ;
 	let emY = 0;
 this.getMousePosition = function(){
@@ -378,6 +371,23 @@ this.getMousePosition = function(){
 	   x : emX,
        y : emY
        }
+}
+const keys = {"LEFT":37,"RIGHT":39,"UP":38,"DOWN":40,"SPACE":32,"Q":81,"W":87,"E":69,"R":82,"T":84,"Y":89,"U":85,"I":73,"O":79,"P":80,"A":65,"S":83,"D":68,"F":70,"G":71,"H":72,"J":74,"K":75,"L":76,"Z":90,"X":88,"V":86,"B":66,"N":78,"M":77}
+let keyDown = {};
+this.GBT_KeyDown = function(keyName){
+    return  keyDown[keys[keyName]] == true;
+}
+addEventListener("keydown", function(event){
+    setKey(event.keyCode);
+});
+addEventListener("keyup", function(event){
+    clearKey(event.keyCode);
+});
+function setKey(e){
+	keyDown[e] = true;
+}
+function clearKey(e){
+	keyDown[e] = false;
 }
 canvas.addEventListener('touchmove', function(event){
 	setTouchPosition(event);
