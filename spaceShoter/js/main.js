@@ -210,7 +210,7 @@ const game = function(){
 		if(scene.isMobileDevice()){
 		if(scene.getTouchPosition().x !=0 && scene.getTouchPosition().y !=0){
 	       	playerShip.x = scene.getTouchPosition().x-(playerShip.width/2);
-	       	playerShip.y = scene.getTouchPosition().y-playerShip.height*2;
+	       	playerShip.y = scene.getTouchPosition().y-playerShip.height*1.5;
 		}
 		}else{
 			if(scene.getMousePosition().x !=0 && scene.getMousePosition().y !=0){
