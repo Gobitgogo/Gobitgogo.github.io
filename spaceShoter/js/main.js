@@ -523,6 +523,7 @@ const game = function(){
 						if(playerShip.invulnerability==false){
 								playerShip.invulnerability=true;
 						        playerShip.live--;
+								playerShip.shootSpeed = 300;
 		                        lives.splice(0,1);
 						}							
 						}
@@ -557,6 +558,7 @@ const game = function(){
 						if(playerShip.invulnerability==false){
 								playerShip.invulnerability=true;
 						        playerShip.live--;
+								playerShip.shootSpeed = 300;
 								lives.splice(0,1);
 						}
 						
