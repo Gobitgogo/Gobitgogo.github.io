@@ -703,7 +703,7 @@ const startGame = function(){
 		    bgs[i].draw();
 		}
 	    start = new scene.textDraw({text : "Click to start", position : "center", size : 50,color : "white"});
-		if(scene.onclick()){
+		if(start.onclick()){
 		    scene.setGameLoop(new game());
 		}
     }
