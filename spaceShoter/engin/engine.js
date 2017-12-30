@@ -11,7 +11,7 @@ function GBT_Scene(obj){
 	canvas.id = obj.id || "canvas";
 	canvas.style.background = obj.style || "white";
 click = false;
-this.game;
+this.game ={};
 
 this.onclick = function(){
     canvas.addEventListener("click",this.checkSceneClick);
@@ -91,7 +91,7 @@ this.loadAll = function(arr){
 	return Promise.all(arr);
 }
 let url = new Map();
-let buff = new Map();
+let buffer = new Map();
 let images = new Map();
 this.GBT_Image = function(obj){
 	this.width = obj.width || canvas.width;
@@ -103,37 +103,55 @@ this.GBT_Image = function(obj){
 	this.load = false;
     this.url = obj.url || 0;
 	this.image = obj.image || 0;
-    this.buff = document.createElement("canvas");
-	this.buff.width = this.width;
-	this.buff.height = this.height;
+    this.buffer = document.createElement("canvas");
+	this.buffer.width = this.width;
+	this.buffer.height = this.height;
         if(url.get(this.url) != this.url && this.url!=0){
-			//buff = this.buff;
+			//buffer = this.buffer;
 			url.set(this.url,this.url);
-			buff.set(this.url,this.buff);
+			buffer.set(this.url,this.buffer);
 			loadImages(this.url).then(image=>{
-				this.buff.getContext("2d").drawImage(image,0,0,this.width,this.height);
+				this.buffer.getContext("2d").drawImage(image,0,0,this.width,this.height);
 				this.load = true;
             });
 			}else if(url.get(this.url) == this.url){
-				this.buff = buff.get(this.url);
+				this.buffer = buffer.get(this.url);
 				this.load = true;
 				
 			}else{
 				if(images.get(this.image) != this.image){
 					images.set(this.image , this.image);
-					this.buff.getContext("2d").drawImage(this.image,0,0,this.width,this.height);
-					buff.set(this.image,this.buff);
+					this.buffer.getContext("2d").drawImage(this.image,0,0,this.width,this.height);
+					buffer.set(this.image,this.buffer);
 					this.load = true;
 				}else{
-					this.buff = buff.get(this.image);
+					this.buffer = buffer.get(this.image);
 					this.load = true;
 				}
 			}
 }
+this.setAlphaChannel = function(image,R,G,B,A){
+this.buffer = document.createElement("canvas");
+this.buffer.width = image.width;
+this.buffer.height = image.height;
+this.ctx = this.buffer.getContext("2d");
+this.ctx.drawImage(image,0,0);
+this.arrayPixels = this.ctx.getImageData(0,0,this.buffer.width,this.buffer.height);
+        for(let i = 0; i<this.arrayPixels.data.length;i+=4){
+			if(this.arrayPixels.data[i]==R && this.arrayPixels.data[i+1]==G && this.arrayPixels.data[i+2]==B){
+				this.arrayPixels.data[i+3]=A;
+		
+			}
+		}
+		this.ctx.putImageData(this.arrayPixels,0,0);
+		
+		return this.buffer;
+}
+
 this.GBT_Image.prototype.draw = function(){
 	if(this.load == true){
         ctx.beginPath();
-	    ctx.drawImage(this.buff,this.x,this.y,this.width,this.height);
+	    ctx.drawImage(this.buffer,this.x,this.y,this.width,this.height);
 	    ctx.closePath();
 	}
 }
@@ -143,12 +161,68 @@ this.GBT_Image.prototype.illuminationObject = function(){
     ctx.strokeRect(this.x,this.y,this.width,this.height);
 	ctx.closePath();
 }
+
+
+this.GBT_SpriteSheet = function(obj){
+	this.url = obj.url || 0;
+	this.image = obj.image || 0;
+    this.width = obj.width || 64;
+	this.height = obj.height || 64;
+	this.x = obj.x || 0;
+	this.y = obj.y || 0;
+	this.dx = obj.dx || 0;
+	this.dy = obj.dy || 0;
+	this.SPX = obj.spritePX;
+	this.SPY = obj.spritePY;
+	this.SW = obj.spriteWidth;
+	this.SH = obj.spriteHeight;
+	this.load = false;
+    this.buffer = document.createElement("canvas");
+	this.img = document.createElement("img");
+	this.buffer.width = this.width;
+	this.buffer.height = this.height;
+        if(url.get(this.url) != this.url && this.url!=0){
+			//buffer = this.buffer;
+			url.set(this.url,this.url);
+			buffer.set(this.url,this.buffer);
+			loadImages(this.url).then(image=>{
+				//this.buffer.getContext("2d").drawImage(image,this.SPX,this.SPY,this.SW,this.SH,0,0,this.width,this.height);
+				this.load = true;
+            });
+			}else if(url.get(this.url) == this.url){
+				this.buffer = buffer.get(this.url);
+				this.load = true;
+				
+			}else{
+				if(images.get(this.image) != this.image){
+					images.set(this.image , this.image);
+					this.img = this.image;
+					this.buffer.getContext("2d").drawImage(this.image,this.SPX,this.SPY,this.SW,this.SH,0,0,this.width,this.height);
+					buffer.set(this.image,this.buffer);
+					this.load = true;
+				}else{
+					this.buffer = buffer.get(this.image);
+					this.load = true;
+				}
+			}
+}
+this.GBT_SpriteSheet.prototype.draw = function(){
+		if(this.load == true){
+        ctx.beginPath();
+	    ctx.drawImage(this.buffer,this.x,this.y,this.width,this.height);
+	    ctx.closePath();
+	}
+}
+
+
 this.GBT_Animation = function(obj){
 	this.url = obj.url || 0;
 	this.image = obj.image || 0;
 	this.obj = obj;
 	this.x = obj.x || 0;
 	this.y = obj.y || 0;
+	this.dx = obj.dx || 0;
+	this.dy = obj.dy || 0;
 	this.width = obj.width || canvas.width;
 	this.height = obj.height || canvas.height;
 	this.sfX = obj.startFrameX || 0;
@@ -162,13 +236,13 @@ this.GBT_Animation = function(obj){
 	this.animationOnY = obj.animationOnY || false;
 
 	this.fps = obj.fps || 1000/60;
-	this.buff = [];
+	this.buffer = [];
 	for(let i=0; i<=this.efX; i++){
-		this.buff[i] = [];
+		this.buffer[i] = [];
 		for(let j=0; j<=this.efY; j++){
-			this.buff[i][j] = document.createElement("canvas");
-	        this.buff[i][j].width = this.width;
-	        this.buff[i][j].height = this.height;
+			this.buffer[i][j] = document.createElement("canvas");
+	        this.buffer[i][j].width = this.width;
+	        this.buffer[i][j].height = this.height;
 	}
 	}
 	if(this.url != 0){
@@ -177,7 +251,7 @@ this.GBT_Animation = function(obj){
         this.sHeight = obj.spriteHeight || image.height/this.efY;
 		    for(let i=this.sfX; i<=this.efX; i++){
 			    for(let j=this.sfY; j<=this.efY; j++){
-		            this.buff[i][j].getContext("2d").drawImage(image,(i)*this.sWidth,(j)*this.sHeight,this.sWidth,this.sHeight,0,0,this.width,this.height);
+		            this.buffer[i][j].getContext("2d").drawImage(image,(i)*this.sWidth,(j)*this.sHeight,this.sWidth,this.sHeight,0,0,this.width,this.height);
 			    }
 			}
 		this.load = true;
@@ -188,7 +262,7 @@ this.GBT_Animation = function(obj){
         this.sHeight = obj.spriteHeight || this.image.height/this.efY;
 		    for(let i=this.sfX; i<=this.efX; i++){
 			    for(let j=this.sfY; j<=this.efY; j++){
-		            this.buff[i][j].getContext("2d").drawImage(this.image,(i)*this.sWidth,(j)*this.sHeight,this.sWidth,this.sHeight,0,0,this.width,this.height);
+		            this.buffer[i][j].getContext("2d").drawImage(this.image,(i)*this.sWidth,(j)*this.sHeight,this.sWidth,this.sHeight,0,0,this.width,this.height);
 			    }
 			}
 		this.load = true;
@@ -227,9 +301,9 @@ this.GBT_Animation.prototype.draw = function(){
             this.timer = new Date().getTime();
 		}
         ctx.beginPath();
-		ctx.drawImage(this.buff[this.cfX][this.cfY],this.x,this.y,
-			                              this.buff[this.cfX][this.cfY].width,
-			                              this.buff[this.cfX][this.cfY].height);
+		ctx.drawImage(this.buffer[this.cfX][this.cfY],this.x,this.y,
+			                              this.buffer[this.cfX][this.cfY].width,
+			                              this.buffer[this.cfX][this.cfY].height);
 	    ctx.closePath();
 	}
 }
@@ -238,6 +312,12 @@ this.GBT_Animation.prototype.setCurrentFrameX = function(cfX){
 }
 this.GBT_Animation.prototype.setCurrentFrameY = function(cfY){
 	 this.cfY = cfY;
+}
+this.GBT_Animation.prototype.setStartFrameX = function(sfX){
+	 this.sfX = sfX;
+}
+this.GBT_Animation.prototype.setStartFrameY = function(sfY){
+	 this.sfY = sfY;
 }
 this.GBT_Animation.prototype.getCurrentFrameX = function(){
 	return this.cfX;
@@ -251,7 +331,13 @@ this.GBT_Animation.prototype.getEndFrameX = function(){
 this.GBT_Animation.prototype.getEndFrameY = function(){
 	return this.efY;
 }
-this.GBT_Animation.prototype.setFrame = function(frameX,frameY){
+this.GBT_Animation.prototype.setEndFrameX = function(efX){
+	this.efX = efX+1;
+}
+this.GBT_Animation.prototype.setEndFrameY = function(efY){
+	this.efY = efY+1;
+}
+this.GBT_Animation.prototype.setFrameXY = function(frameX,frameY){
 	this.sfX = frameX;
 	this.sfY = frameY;
 	this.efX = this.obj.endFrameX+1;
@@ -350,11 +436,13 @@ this.GBT_Rect = function(obj){
 	this.height = obj.height || 50;
 	this.x = obj.x || 0;
 	this.y = obj.y || 0;
-	ctx.fillStyle = obj.style || null;
-	ctx.fillStroke = obj.stroke || null;
+	this.obj = obj;
+
 }
 this.GBT_Rect.prototype.draw = function(){
 	ctx.beginPath();
+	ctx.fillStyle = this.obj.style || null;
+	ctx.fillStroke = this.obj.stroke || null;
 	ctx.fillRect(this.x,this.y,this.width,this.height);
 	ctx.closePath();
 }
