@@ -672,7 +672,7 @@ const gameOver = function(){
 		}
         scores = new scene.textDraw({text : "You scores: " + scor,position : "center",y : scene.HEIGHT/3, size : 50,color : "white"});
 	    start = new scene.textDraw({text : "Click to start",position : "center", size : 40,color : "white"});
-	    if(scene.onclick()){
+	    if(start.onclick()){
 	    	scene.setGameLoop(new game());
 	    }
 	   publish = new scene.textDraw({text : "Publish on VK",position : "center", y : start.y+start.height*2, size : 40,color : "#45688E"});
