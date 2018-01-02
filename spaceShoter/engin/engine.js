@@ -12,7 +12,9 @@ function GBT_Scene(obj){
 	canvas.style.background = obj.style || "white";
 click = false;
 this.game ={};
-
+this.getRandom = function(min, max){
+return Math.floor(Math.random() * (max - min+1) + min);
+}
 this.onclick = function(){
     canvas.addEventListener("click",this.checkSceneClick);
 	if(click){
@@ -181,30 +183,16 @@ this.GBT_SpriteSheet = function(obj){
 	this.img = document.createElement("img");
 	this.buffer.width = this.width;
 	this.buffer.height = this.height;
-        if(url.get(this.url) != this.url && this.url!=0){
-			//buffer = this.buffer;
-			url.set(this.url,this.url);
-			buffer.set(this.url,this.buffer);
+        if(this.url!=0){
 			loadImages(this.url).then(image=>{
 				//this.buffer.getContext("2d").drawImage(image,this.SPX,this.SPY,this.SW,this.SH,0,0,this.width,this.height);
 				this.load = true;
             });
-			}else if(url.get(this.url) == this.url){
-				this.buffer = buffer.get(this.url);
-				this.load = true;
-				
 			}else{
-				if(images.get(this.image) != this.image){
-					images.set(this.image , this.image);
-					this.img = this.image;
-					this.buffer.getContext("2d").drawImage(this.image,this.SPX,this.SPY,this.SW,this.SH,0,0,this.width,this.height);
-					buffer.set(this.image,this.buffer);
-					this.load = true;
-				}else{
-					this.buffer = buffer.get(this.image);
+				this.buffer.getContext("2d").drawImage(this.image,this.SPX,this.SPY,this.SW,this.SH,0,0,this.width,this.height);
 					this.load = true;
 				}
-			}
+			
 }
 this.GBT_SpriteSheet.prototype.draw = function(){
 		if(this.load == true){
@@ -234,7 +222,7 @@ this.GBT_Animation = function(obj){
     this.animationOnXY = obj.animationOnXY || false;
 	this.animationOnX = obj.animationOnX || false;
 	this.animationOnY = obj.animationOnY || false;
-
+    this.repeat = 0;
 	this.fps = obj.fps || 1000/60;
 	this.buffer = [];
 	for(let i=0; i<=this.efX; i++){
@@ -275,6 +263,7 @@ this.GBT_Animation.prototype.draw = function(){
 		    if(this.animationOnXY == true){
                 this.cfX++;
 				if(this.cfX>=this.efX){
+					this.repeat++;
 					this.cfX=this.sfX;
 					this.cfY++;
 				    if(this.cfY>=this.efY){
@@ -286,6 +275,7 @@ this.GBT_Animation.prototype.draw = function(){
 				this.cfY=this.sfY;
 				this.cfX++;
 				if(this.cfX>=this.efX){
+					this.repeat++;
 					this.cfX=this.sfX;
 				}
 			}
@@ -294,6 +284,7 @@ this.GBT_Animation.prototype.draw = function(){
 				this.cfX=this.sfX;
 				this.cfY++;
 				if(this.cfY>=this.efY){
+					this.repeat++;
 					this.cfY=this.sfY;
 				}
 			}
@@ -465,6 +456,7 @@ let keyDown = {};
 this.GBT_KeyDown = function(keyName){
     return  keyDown[keys[keyName]] == true;
 }
+
 addEventListener("keydown", function(event){
     setKey(event.keyCode);
 });
