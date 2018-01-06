@@ -77,9 +77,9 @@ this.fpsDraw = function(x,y,size,color){
 	ctx.closePath();
 }
 loadImages = function(url){
-	return new Promise(resolve =>{
+	return new Promise(function(resolve){
 		var image = new Image();
-		image.addEventListener("load",() =>{
+		image.addEventListener("load",function(){
 			resolve(image);
 		});
 		image.src = url;
@@ -112,7 +112,7 @@ this.GBT_Image = function(obj){
 			//buffer = this.buffer;
 			url.set(this.url,this.url);
 			buffer.set(this.url,this.buffer);
-			loadImages(this.url).then(image=>{
+			loadImages(this.url).then(function(image){
 				this.buffer.getContext("2d").drawImage(image,0,0,this.width,this.height);
 				this.load = true;
             });
@@ -183,7 +183,7 @@ this.GBT_SpriteSheet = function(obj){
 	this.buffer.width = this.width;
 	this.buffer.height = this.height;
         if(this.url!=0){
-			loadImages(this.url).then(image=>{
+			loadImages(this.url).then(function(image){
 				this.buffer.getContext("2d").drawImage(image,this.SPX,this.SPY,this.SW,this.SH,0,0,this.width,this.height);
 				this.load = true;
             });
@@ -239,7 +239,7 @@ this.GBT_Animation = function(obj){
 	}
 	}
 	if(this.url != 0){
-	loadImages(this.url).then(image=>{
+	loadImages(this.url).then(function(image){
         this.sWidth = obj.spriteWidth || image.width/this.efX;
         this.sHeight = obj.spriteHeight || image.height/this.efY;
 		    for(var i=this.sfX; i<=this.efX; i++){
