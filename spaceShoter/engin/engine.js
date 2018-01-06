@@ -1,9 +1,9 @@
 function GBT_Scene(obj){
-	let thisUpdateScene;
-    let thisRenderScene;
-	const canvas = document.createElement("canvas");
+	var thisUpdateScene;
+    var thisRenderScene;
+	var canvas = document.createElement("canvas");
     document.body.appendChild(canvas);
-    const ctx = canvas.getContext("2d");
+    var ctx = canvas.getContext("2d");
 	canvas.width = obj.width || 400;
 	canvas.height = obj.height || 400;
 	this.WIDTH = canvas.width;
@@ -55,9 +55,9 @@ function sceneStart(){
 function clearContext(){
 	ctx.clearRect(0,0,canvas.width,canvas.height);
 }
-let lastLoop = new Date();
-let lastDraw = 0;
-let f = 0;
+var lastLoop = new Date();
+var lastDraw = 0;
+var f = 0;
 this.fpsDraw = function(x,y,size,color){
 	this.x = x || 0;
     this.y = y || 48;
@@ -78,7 +78,7 @@ this.fpsDraw = function(x,y,size,color){
 }
 loadImages = function(url){
 	return new Promise(resolve =>{
-		const image = new Image();
+		var image = new Image();
 		image.addEventListener("load",() =>{
 			resolve(image);
 		});
@@ -92,9 +92,9 @@ this.loadResourse = function(url){
 this.loadAll = function(arr){
 	return Promise.all(arr);
 }
-let url = new Map();
-let buffer = new Map();
-let images = new Map();
+var url = new Map();
+var buffer = new Map();
+var images = new Map();
 this.GBT_Image = function(obj){
 	this.width = obj.width || canvas.width;
 	this.height = obj.height || canvas.height;
@@ -139,7 +139,7 @@ this.buffer.height = image.height;
 this.ctx = this.buffer.getContext("2d");
 this.ctx.drawImage(image,0,0);
 this.arrayPixels = this.ctx.getImageData(0,0,this.buffer.width,this.buffer.height);
-        for(let i = 0; i<this.arrayPixels.data.length;i+=4){
+        for(var i = 0; i<this.arrayPixels.data.length;i+=4){
 			if(this.arrayPixels.data[i]==R && this.arrayPixels.data[i+1]==G && this.arrayPixels.data[i+2]==B){
 				this.arrayPixels.data[i+3]=A;
 		
@@ -180,12 +180,11 @@ this.GBT_SpriteSheet = function(obj){
 	this.SH = obj.spriteHeight;
 	this.load = false;
     this.buffer = document.createElement("canvas");
-	this.img = document.createElement("img");
 	this.buffer.width = this.width;
 	this.buffer.height = this.height;
         if(this.url!=0){
 			loadImages(this.url).then(image=>{
-				//this.buffer.getContext("2d").drawImage(image,this.SPX,this.SPY,this.SW,this.SH,0,0,this.width,this.height);
+				this.buffer.getContext("2d").drawImage(image,this.SPX,this.SPY,this.SW,this.SH,0,0,this.width,this.height);
 				this.load = true;
             });
 			}else{
@@ -200,6 +199,12 @@ this.GBT_SpriteSheet.prototype.draw = function(){
 	    ctx.drawImage(this.buffer,this.x,this.y,this.width,this.height);
 	    ctx.closePath();
 	}
+}
+this.GBT_SpriteSheet.prototype.illuminationObject = function(){
+	ctx.beginPath();
+	ctx.strokeStyle = "white";
+    ctx.strokeRect(this.x,this.y,this.width,this.height);
+	ctx.closePath();
 }
 
 
@@ -225,9 +230,9 @@ this.GBT_Animation = function(obj){
     this.repeat = 0;
 	this.fps = obj.fps || 1000/60;
 	this.buffer = [];
-	for(let i=0; i<=this.efX; i++){
+	for(var i=0; i<=this.efX; i++){
 		this.buffer[i] = [];
-		for(let j=0; j<=this.efY; j++){
+		for(var j=0; j<=this.efY; j++){
 			this.buffer[i][j] = document.createElement("canvas");
 	        this.buffer[i][j].width = this.width;
 	        this.buffer[i][j].height = this.height;
@@ -237,8 +242,8 @@ this.GBT_Animation = function(obj){
 	loadImages(this.url).then(image=>{
         this.sWidth = obj.spriteWidth || image.width/this.efX;
         this.sHeight = obj.spriteHeight || image.height/this.efY;
-		    for(let i=this.sfX; i<=this.efX; i++){
-			    for(let j=this.sfY; j<=this.efY; j++){
+		    for(var i=this.sfX; i<=this.efX; i++){
+			    for(var j=this.sfY; j<=this.efY; j++){
 		            this.buffer[i][j].getContext("2d").drawImage(image,(i)*this.sWidth,(j)*this.sHeight,this.sWidth,this.sHeight,0,0,this.width,this.height);
 			    }
 			}
@@ -248,8 +253,8 @@ this.GBT_Animation = function(obj){
 	}else{
 		this.sWidth = obj.spriteWidth || this.image.width/this.efX;
         this.sHeight = obj.spriteHeight || this.image.height/this.efY;
-		    for(let i=this.sfX; i<=this.efX; i++){
-			    for(let j=this.sfY; j<=this.efY; j++){
+		    for(var i=this.sfX; i<=this.efX; i++){
+			    for(var j=this.sfY; j<=this.efY; j++){
 		            this.buffer[i][j].getContext("2d").drawImage(this.image,(i)*this.sWidth,(j)*this.sHeight,this.sWidth,this.sHeight,0,0,this.width,this.height);
 			    }
 			}
@@ -363,7 +368,7 @@ this.GBT_TimerOut.prototype.start = function(f,t){
 	    this.timer = new Date().getTime();
 	}
 }
-let p;
+var p;
 this.textDraw = function(obj){
     this.color =  obj.color || "green";
 	this.size = obj.size + "px serif" || "48px serif";
@@ -414,7 +419,7 @@ this.textDraw.prototype.onclick = function(){
 }
 this.textDraw.prototype.checkStart = function(e){
 	this.getMousePosition = function(e) {
-    let r = canvas.getBoundingClientRect();
+    var r = canvas.getBoundingClientRect();
     return {
         x: e.clientX - r.left || 0,
         y: e.clientY - r.top || 0
@@ -438,11 +443,11 @@ this.GBT_Rect.prototype.draw = function(){
 	ctx.closePath();
 }
 
-	let emX =0 ;
-	let emY = 0;
+	var emX =0 ;
+	var emY = 0;
 this.getMousePosition = function(){
    canvas.onmousemove = function(e){
-		let r = canvas.getBoundingClientRect();
+		var r = canvas.getBoundingClientRect();
         emX = e.clientX - r.left || 0;
 	 	emY = e.clientY - r.top || 0;
 	}
@@ -451,8 +456,8 @@ this.getMousePosition = function(){
        y : emY
        }
 }
-const keys = {"LEFT":37,"RIGHT":39,"UP":38,"DOWN":40,"SPACE":32,"Q":81,"W":87,"E":69,"R":82,"T":84,"Y":89,"U":85,"I":73,"O":79,"P":80,"A":65,"S":83,"D":68,"F":70,"G":71,"H":72,"J":74,"K":75,"L":76,"Z":90,"X":88,"V":86,"B":66,"N":78,"M":77}
-let keyDown = {};
+var keys = {"LEFT":37,"RIGHT":39,"UP":38,"DOWN":40,"SPACE":32,"Q":81,"W":87,"E":69,"R":82,"T":84,"Y":89,"U":85,"I":73,"O":79,"P":80,"A":65,"S":83,"D":68,"F":70,"G":71,"H":72,"J":74,"K":75,"L":76,"Z":90,"X":88,"V":86,"B":66,"N":78,"M":77}
+var keyDown = {};
 this.GBT_KeyDown = function(keyName){
     return  keyDown[keys[keyName]] == true;
 }
@@ -472,8 +477,8 @@ function clearKey(e){
 canvas.addEventListener('touchmove', function(event){
 	setTouchPosition(event);
 });
-let etX =0 ;
-let etY = 0;
+var etX =0 ;
+var etY = 0;
 setTouchPosition = function(e){
 	    e.preventDefault();
 	    e = e.changedTouches[0];
