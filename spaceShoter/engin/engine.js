@@ -1,4 +1,3 @@
-window.onload = function(){
 function GBT_Scene(obj){
 	var thisUpdateScene;
     var thisRenderScene;
@@ -498,6 +497,6 @@ this.collisionCircle = function(obj_1,obj_2){
 this.isMobileDevice=function(){return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)}
 }
 
-}
+
 
 
