@@ -1,4 +1,5 @@
 window.onload = function(){
+	console.log("d");
 function GBT_Scene(obj){
 	var thisUpdateScene;
     var thisRenderScene;
